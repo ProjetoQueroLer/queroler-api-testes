@@ -5,6 +5,9 @@ import io.restassured.response.Response;
 import models.UsuarioModel;
 import utlis.EndPoints;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import static io.restassured.RestAssured.given;
 
 public class UsuarioClient {
@@ -42,11 +45,15 @@ public class UsuarioClient {
                 .put(EndPoints.USUARIOS_ID_DADOS_ADICIONAIS);
     }
 
-    public static Response atualizarUsuarioAlterarSenha(int id, Object usuario) {
+    public static Response atualizarUsuarioAlterarSenha(int id, String senhaAtual, String senhaNova) {
+        Map<String, String> payload = new HashMap<>();
+        payload.put("senhaAtual", senhaAtual);
+        payload.put("senhaNova", senhaNova);
+
         return given()
                 .pathParam("id", id)
                 .contentType(ContentType.JSON)
-                .body(usuario)
+                .body(payload)
             .when()
                 .put(EndPoints.USUARIOS_ID_ALTERAR_SENHA);
     }
