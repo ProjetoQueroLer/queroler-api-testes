@@ -13,9 +13,6 @@ import report.Setup;
 import utils.DataFakerUtils;
 import utlis.UsuarioHelper;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import static org.hamcrest.Matchers.equalTo;
 import static utlis.UsuarioHelper.extrairEmail;
 import static utlis.UsuarioHelper.logResposta;
@@ -131,7 +128,7 @@ public class QueroLerUsuarioTest extends BaseTest {
 
         int id = response.jsonPath().getInt("id");
 
-        usuario.setNome("Nome Atualizado");
+        usuario.setNome(DataFakerUtils.nome());
 
         Response responseAtualizar = UsuarioClient.atualizarUsuario(id, usuario);
 
@@ -157,7 +154,7 @@ public class QueroLerUsuarioTest extends BaseTest {
 
         int id = response.jsonPath().getInt("id");
 
-        usuario.setEmail("NomeAtualizado@hotmail.com");
+        usuario.setEmail(DataFakerUtils.email());
 
         Response responseAtualizar = UsuarioClient.atualizarUsuario(id, usuario);
 
@@ -215,6 +212,7 @@ public class QueroLerUsuarioTest extends BaseTest {
 
         responseAtualizar
                 .then()
+                .log().body()
                 .statusCode(204)
         ;
 
@@ -235,15 +233,167 @@ public class QueroLerUsuarioTest extends BaseTest {
 
         int id = response.jsonPath().getInt("id");
 
-        Map<String, String> senhaPayload = new HashMap<>();
-        senhaPayload.put("senhaAtual", usuario.getSenha());
-        senhaPayload.put("senhaNova", "Teste@321");
-
-        Response responseAtualizar = UsuarioClient.atualizarUsuarioAlterarSenha(id, senhaPayload);
+        Response responseAtualizar = UsuarioClient.atualizarUsuarioAlterarSenha(id, usuario.getSenha(), "Teste@321");
 
         responseAtualizar
                 .then()
                 .statusCode(204)
+        ;
+
+        logResposta("PUT/usuarios/"+id+"/alterar-senha", responseAtualizar);
+
+    }
+
+    @Test
+    public void atualizacaoAlterarSenhaSemLetraMaiusculaUsuarioId() {
+        UsuarioModel usuario = UsuarioFactory.criarUsuario();
+
+        Response response = UsuarioClient.criarUsuario(usuario);
+
+        response
+                .then()
+                .log().body()
+        ;
+
+        int id = response.jsonPath().getInt("id");
+
+        Response responseAtualizar = UsuarioClient.atualizarUsuarioAlterarSenha(id, usuario.getSenha(), "123456a@");
+
+        responseAtualizar
+                .then()
+                .statusCode(400)
+                .log().body()
+                .body(equalTo("A senha deve conter pelo menos uma letra maiúscula."))
+        ;
+
+        logResposta("PUT/usuarios/"+id+"/alterar-senha", responseAtualizar);
+
+    }
+
+    @Test
+    public void atualizacaoAlterarSenhaSemLetraMinusculaUsuarioId() {
+        UsuarioModel usuario = UsuarioFactory.criarUsuario();
+
+        Response response = UsuarioClient.criarUsuario(usuario);
+
+        response
+                .then()
+                .log().body()
+        ;
+
+        int id = response.jsonPath().getInt("id");
+
+        Response responseAtualizar = UsuarioClient.atualizarUsuarioAlterarSenha(id, usuario.getSenha(), "123456A@");
+
+        responseAtualizar
+                .then()
+                .statusCode(400)
+                .log().body()
+                .body(equalTo("A senha deve conter pelo menos uma letra minúscula."))
+        ;
+
+        logResposta("PUT/usuarios/"+id+"/alterar-senha", responseAtualizar);
+
+    }
+
+    @Test
+    public void atualizacaoAlterarSenhaMinimo8CaracteresUsuarioId() {
+        UsuarioModel usuario = UsuarioFactory.criarUsuario();
+
+        Response response = UsuarioClient.criarUsuario(usuario);
+
+        response
+                .then()
+                .log().body()
+        ;
+
+        int id = response.jsonPath().getInt("id");
+
+        Response responseAtualizar = UsuarioClient.atualizarUsuarioAlterarSenha(id, usuario.getSenha(), "123456");
+
+        responseAtualizar
+                .then()
+                .statusCode(400)
+                .log().body()
+                .body(equalTo("A senha deve ter no mínimo 8 caracteres."))
+        ;
+
+        logResposta("PUT/usuarios/"+id+"/alterar-senha", responseAtualizar);
+
+    }
+
+    @Test
+    public void atualizacaoAlterarSenhaSemCaracterEspecialUsuarioId() {
+        UsuarioModel usuario = UsuarioFactory.criarUsuario();
+
+        Response response = UsuarioClient.criarUsuario(usuario);
+
+        response
+                .then()
+                .log().body()
+        ;
+
+        int id = response.jsonPath().getInt("id");
+
+        Response responseAtualizar = UsuarioClient.atualizarUsuarioAlterarSenha(id, usuario.getSenha(), "123456Aa");
+
+        responseAtualizar
+                .then()
+                .statusCode(400)
+                .log().body()
+                .body(equalTo("A senha deve conter pelo menos um caractere especial."))
+        ;
+
+        logResposta("PUT/usuarios/"+id+"/alterar-senha", responseAtualizar);
+
+    }
+
+    @Test
+    public void atualizacaoAlterarSenhaSemNumeroUsuarioId() {
+        UsuarioModel usuario = UsuarioFactory.criarUsuario();
+
+        Response response = UsuarioClient.criarUsuario(usuario);
+
+        response
+                .then()
+                .log().body()
+        ;
+
+        int id = response.jsonPath().getInt("id");
+
+        Response responseAtualizar = UsuarioClient.atualizarUsuarioAlterarSenha(id, usuario.getSenha(), "abcdABCD");
+
+        responseAtualizar
+                .then()
+                .statusCode(400)
+                .log().body()
+                .body(equalTo("A senha deve conter pelo menos um número."))
+        ;
+
+        logResposta("PUT/usuarios/"+id+"/alterar-senha", responseAtualizar);
+
+    }
+
+    @Test
+    public void atualizacaoAlterarSenhaIncorretaSenhaAtualUsuarioId() {
+        UsuarioModel usuario = UsuarioFactory.criarUsuario();
+
+        Response response = UsuarioClient.criarUsuario(usuario);
+
+        response
+                .then()
+                .log().body()
+        ;
+
+        int id = response.jsonPath().getInt("id");
+
+        Response responseAtualizar = UsuarioClient.atualizarUsuarioAlterarSenha(id, "@TestErro1", "TestNew1@");
+
+        responseAtualizar
+                .then()
+                .statusCode(400)
+                .log().body()
+                .body(equalTo("A senha deve conter pelo menos um número."))
         ;
 
         logResposta("PUT/usuarios/"+id+"/alterar-senha", responseAtualizar);
