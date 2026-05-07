@@ -6,7 +6,7 @@ import io.restassured.http.ContentType;
 import io.restassured.specification.RequestSpecification;
 import io.restassured.specification.ResponseSpecification;
 import org.junit.jupiter.api.BeforeEach;
-import utils.EndPoints;
+import utlis.EndPoints;
 
 public class BaseTest extends EndPoints {
 

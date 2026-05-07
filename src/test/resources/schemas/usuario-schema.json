@@ -1,0 +1,70 @@
+{
+  "definitions": {},
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://example.com/object1777044017.json",
+  "title": "Root",
+  "type": "object",
+  "required": [
+    "nome",
+    "email",
+    "dataDeNascimento"
+  ],
+  "properties": {
+    "nome": {
+      "$id": "#root/nome",
+      "title": "Nome",
+      "type": "string",
+      "default": "",
+      "examples": [
+        "Isadora Gabeira"
+      ],
+      "pattern": "^.*$"
+    },
+    "email": {
+      "$id": "#root/email",
+      "title": "Email",
+      "type": "string",
+      "format": "email",
+      "default": "",
+      "examples": [
+        "mariaeduarda.antunes@hotmail.com"
+      ],
+      "pattern": "^.*$"
+    },
+    "dataDeNascimento": {
+      "$id": "#root/dataDeNascimento",
+      "title": "Datadenascimento",
+      "type": "string",
+      "format": "date",
+      "default": "",
+      "examples": [
+        "1992-04-22"
+      ],
+      "pattern": "^.*$"
+    },
+    "cidade": {
+      "$id": "#root/cidade",
+      "title": "Cidade",
+      "type": ["null","string"],
+      "default": null
+    },
+    "estado": {
+      "$id": "#root/estado",
+      "title": "Estado",
+      "type": ["null","string"],
+      "default": null
+    },
+    "pais": {
+      "$id": "#root/pais",
+      "title": "Pais",
+      "type": ["null","string"],
+      "default": null
+    },
+    "foto": {
+      "$id": "#root/foto",
+      "title": "Foto",
+      "type": ["null","string"],
+      "default": null
+    }
+  }
+}
