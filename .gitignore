@@ -3,6 +3,7 @@ target/
 !**/src/main/**/target/
 !**/src/test/**/target/
 reports/
+src/test/resources/dados.properties
 
 ### IntelliJ IDEA ###
 .idea/modules.xml
