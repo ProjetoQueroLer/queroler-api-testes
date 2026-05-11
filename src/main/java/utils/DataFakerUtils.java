@@ -2,6 +2,8 @@ package utils;
 
 import net.datafaker.Faker;
 
+import java.nio.charset.StandardCharsets;
+import java.util.Base64;
 import java.util.Locale;
 
 public class DataFakerUtils {
@@ -37,7 +39,7 @@ public class DataFakerUtils {
     }
 
     public static String foto() {
-        return faker.internet().image();
+        return faker.lorem().characters(20);
     }
 
     public static String senhaAleatoria() {
