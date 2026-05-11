@@ -3,6 +3,8 @@ package factories;
 import models.UsuarioModel;
 import utils.DataFakerUtils;
 
+import java.util.Base64;
+
 public class UsuarioFactory {
 
     public static UsuarioModel criarUsuario() {
@@ -29,7 +31,7 @@ public class UsuarioFactory {
         usuario.setCidade(DataFakerUtils.cidade());
         usuario.setEstado(DataFakerUtils.estado());
         usuario.setPais(DataFakerUtils.pais());
-//        usuario.setFoto(DataFakerUtils.foto());
+        usuario.setFoto(Base64.getDecoder().decode(DataFakerUtils.foto()));
 
         return usuario;
     }
