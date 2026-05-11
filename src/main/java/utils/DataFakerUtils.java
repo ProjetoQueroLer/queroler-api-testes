@@ -40,5 +40,15 @@ public class DataFakerUtils {
         return faker.internet().image();
     }
 
+    public static String senhaAleatoria() {
+        String maiuscula = faker.regexify("[A-Z]");
+        String minuscula = faker.regexify("[a-z]");
+        String numero = faker.regexify("[0-9]");
+        String especial = faker.regexify("[@#$%&*!]");
+        String restantes = faker.regexify("[A-Za-z0-9@#$%&*!]{4}");
+
+        return maiuscula + minuscula + numero + especial + restantes;
+    }
+
 
 }
