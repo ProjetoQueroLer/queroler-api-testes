@@ -2,6 +2,7 @@ package factories;
 
 import models.UsuarioModel;
 import utils.DataFakerUtils;
+import utlis.CarregarImagem;
 
 import java.util.Base64;
 
@@ -31,7 +32,7 @@ public class UsuarioFactory {
         usuario.setCidade(DataFakerUtils.cidade());
         usuario.setEstado(DataFakerUtils.estado());
         usuario.setPais(DataFakerUtils.pais());
-        usuario.setFoto(Base64.getDecoder().decode(DataFakerUtils.foto()));
+        usuario.setFoto(CarregarImagem.carregarImagemBase64());
 
         return usuario;
     }
