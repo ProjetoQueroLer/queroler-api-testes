@@ -32,20 +32,22 @@ public class UsuarioClient {
                 .get(EndPoints.USUARIOS);
     }
 
-    public static Response atualizarUsuario(String token, UsuarioModel usuario) {
+    public static Response atualizarUsuario(String token, UsuarioModel usuario) throws JsonProcessingException {
+        ObjectMapper objectMapper = new ObjectMapper();
         return given()
                 .cookie("jwt", token)
-                .contentType(ContentType.JSON)
-                .body(usuario)
+                .contentType(ContentType.MULTIPART)
+                .multiPart("dados", objectMapper.writeValueAsString(usuario),"application/json")
             .when()
                 .put(EndPoints.USUARIOS);
     }
 
-    public static Response atualizarUsuarioDadoAdicionais(String token, UsuarioModel usuario) {
+    public static Response atualizarUsuarioDadoAdicionais(String token, UsuarioModel usuario) throws JsonProcessingException {
+        ObjectMapper objectMapper = new ObjectMapper();
         return given()
                 .cookie("jwt", token)
-                .contentType(ContentType.JSON)
-                .body(usuario)
+                .contentType(ContentType.MULTIPART)
+                .multiPart("dados", objectMapper.writeValueAsString(usuario),"application/json")
             .when()
                 .put(EndPoints.USUARIOS_DADOS_ADICIONAIS);
     }
