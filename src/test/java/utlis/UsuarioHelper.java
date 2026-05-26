@@ -29,7 +29,7 @@ public class UsuarioHelper {
 
     }
 
-    public static String gerarToken(UsuarioModel usuario) throws JsonProcessingException {
+    public static String gerarToken(UsuarioModel usuario) {
 
         LoginModel login = new LoginModel();
         login.setUser(usuario.getEmail());
