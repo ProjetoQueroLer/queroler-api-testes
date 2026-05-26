@@ -4,8 +4,6 @@ import models.UsuarioModel;
 import utils.DataFakerUtils;
 import utlis.CarregarImagem;
 
-import java.util.Base64;
-
 public class UsuarioFactory {
 
     public static UsuarioModel criarUsuario() {
