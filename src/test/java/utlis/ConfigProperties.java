@@ -17,7 +17,7 @@ public class ConfigProperties {
             prop.load(input);
 
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException("Erro ao carregar dados.properties", e);
         }
     }
 

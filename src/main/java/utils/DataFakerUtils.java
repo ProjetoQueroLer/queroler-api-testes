@@ -38,10 +38,6 @@ public class DataFakerUtils {
         return faker.address().country();
     }
 
-    public static String foto() {
-        return faker.lorem().characters(20);
-    }
-
     public static String senhaAleatoria() {
         String maiuscula = faker.regexify("[A-Z]");
         String minuscula = faker.regexify("[a-z]");
@@ -51,6 +47,5 @@ public class DataFakerUtils {
 
         return maiuscula + minuscula + numero + especial + restantes;
     }
-
 
 }

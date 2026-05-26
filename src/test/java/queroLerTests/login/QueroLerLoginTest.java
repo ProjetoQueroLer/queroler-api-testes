@@ -2,13 +2,12 @@ package queroLerTests.login;
 
 import baseTest.BaseTest;
 import clients.LoginClient;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import factories.LoginFactory;
 import io.restassured.response.Response;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import report.Setup;
-
-import java.io.IOException;
 
 import static org.hamcrest.Matchers.equalTo;
 import static utlis.UsuarioHelper.logResposta;
@@ -17,7 +16,7 @@ import static utlis.UsuarioHelper.logResposta;
 public class QueroLerLoginTest extends BaseTest {
 
     @Test
-    public void acessarLoginUsuarioLeitorComSucesso() {
+    public void acessarLoginUsuarioLeitorComSucesso() throws JsonProcessingException {
         Response response = LoginClient.acessarLogin(LoginFactory.usuarioLeitorSucesso());
 
         response
@@ -30,14 +29,14 @@ public class QueroLerLoginTest extends BaseTest {
     }
 
     @Test
-    public void acessarLoginUsuarioLeitorSenhaInvalida() {
+    public void acessarLoginUsuarioLeitorSenhaInvalida() throws JsonProcessingException {
         Response response = LoginClient.acessarLogin(LoginFactory.usuarioLeitorSenhaInvalida());
 
         response
                 .then()
                 .log().body()
                 .statusCode(401)
-                .body(equalTo("E-mail ou senha inválida."))
+                .body(equalTo("Senha incorreta."))
                 ;
 
         logResposta("POST/logins", response);
@@ -78,14 +77,14 @@ public class QueroLerLoginTest extends BaseTest {
                 .then()
                 .log().body()
                 .statusCode(401)
-                .body(equalTo("E-mail ou senha inválida."))
+                .body(equalTo("Senha incorreta."))
                 ;
 
         logResposta("POST/logins", response);
     }
 
     @Test
-    public void acessarLoginUsuarioModeradorComSucesso() throws IOException {
+    public void acessarLoginUsuarioModeradorComSucesso() {
         Response response = LoginClient.acessarLogin(LoginFactory.usuarioModeradorEmailComSucesso());
 
         response
@@ -105,7 +104,7 @@ public class QueroLerLoginTest extends BaseTest {
                 .then()
                 .log().body()
                 .statusCode(401)
-                .body(equalTo("E-mail ou senha inválida."))
+                .body(equalTo("Senha incorreta."))
                 ;
 
         logResposta("POST/logins", response);

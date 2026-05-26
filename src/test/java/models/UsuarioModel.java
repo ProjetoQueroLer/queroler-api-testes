@@ -17,7 +17,7 @@ public class UsuarioModel {
     private String cidade;
     private String estado;
     private String pais;
-    private byte[] foto;
+    private String foto;
     private String senhaAtual;
     private String senhaNova;
 

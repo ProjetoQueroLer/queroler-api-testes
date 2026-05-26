@@ -1,5 +1,7 @@
 package clients;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.restassured.http.ContentType;
 import io.restassured.response.Response;
 import models.UsuarioModel;
@@ -12,57 +14,60 @@ import static io.restassured.RestAssured.given;
 
 public class UsuarioClient {
 
-    public static Response criarUsuario(Object body) {
+    public static Response criarUsuario(Object usuario) throws JsonProcessingException {
+        ObjectMapper mapper = new ObjectMapper();
+
+        String dadosJson = mapper.writeValueAsString(usuario);
         return given()
-                .contentType(ContentType.JSON)
-                .body(body)
+                .contentType(ContentType.MULTIPART)
+                .multiPart("dados", dadosJson)
             .when()
                 .post(EndPoints.USUARIOS);
     }
 
-    public static Response buscarUsuarioId(int id) {
+    public static Response buscarUsuario(String token) {
         return given()
-                .pathParam("id", id)
+                .cookie("jwt", token)
             .when()
-                .get(EndPoints.USUARIOS_ID);
+                .get(EndPoints.USUARIOS);
     }
 
-    public static Response atualizarUsuario(int id, UsuarioModel usuario) {
+    public static Response atualizarUsuario(String token, UsuarioModel usuario) {
         return given()
-                .pathParam("id", id)
+                .cookie("jwt", token)
                 .contentType(ContentType.JSON)
                 .body(usuario)
             .when()
-                .put(EndPoints.USUARIOS_ID);
+                .put(EndPoints.USUARIOS);
     }
 
-    public static Response atualizarUsuarioDadoAdicionais(int id, UsuarioModel usuario) {
+    public static Response atualizarUsuarioDadoAdicionais(String token, UsuarioModel usuario) {
         return given()
-                .pathParam("id", id)
+                .cookie("jwt", token)
                 .contentType(ContentType.JSON)
                 .body(usuario)
             .when()
-                .put(EndPoints.USUARIOS_ID_DADOS_ADICIONAIS);
+                .put(EndPoints.USUARIOS_DADOS_ADICIONAIS);
     }
 
-    public static Response atualizarUsuarioAlterarSenha(int id, String senhaAtual, String senhaNova) {
+    public static Response atualizarUsuarioAlterarSenha(String token, String senhaAtual, String senhaNova) {
         Map<String, String> payload = new HashMap<>();
         payload.put("senhaAtual", senhaAtual);
         payload.put("senhaNova", senhaNova);
 
         return given()
-                .pathParam("id", id)
+                .cookie("jwt", token)
                 .contentType(ContentType.JSON)
                 .body(payload)
             .when()
-                .put(EndPoints.USUARIOS_ID_ALTERAR_SENHA);
+                .put(EndPoints.USUARIOS_ALTERAR_SENHA);
     }
 
-    public static Response deleteUsuarioId(int id) {
+    public static Response deleteUsuarioId(String token) {
         return given()
-                .pathParam("id", id)
+                .cookie("jwt", token)
             .when()
-                .delete(EndPoints.USUARIOS_ID);
+                .delete(EndPoints.USUARIOS);
     }
 
 }

@@ -1,6 +1,7 @@
 package factories;
 
 import clients.UsuarioClient;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import models.LoginModel;
 import models.UsuarioModel;
 import utils.DataFakerUtils;
@@ -8,7 +9,7 @@ import utlis.ConfigProperties;
 
 public class LoginFactory {
 
-    public static LoginModel usuarioLeitorSucesso() {
+    public static LoginModel usuarioLeitorSucesso() throws JsonProcessingException {
         UsuarioModel usuario = UsuarioFactory.criarUsuario();
         UsuarioClient.criarUsuario(usuario);
 
@@ -18,7 +19,7 @@ public class LoginFactory {
         return usuarioLogin;
     }
 
-    public static LoginModel usuarioLeitorSenhaInvalida() {
+    public static LoginModel usuarioLeitorSenhaInvalida() throws JsonProcessingException {
         UsuarioModel usuario = UsuarioFactory.criarUsuario();
         UsuarioClient.criarUsuario(usuario);
 

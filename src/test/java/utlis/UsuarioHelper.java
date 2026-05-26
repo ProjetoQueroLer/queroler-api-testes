@@ -1,19 +1,15 @@
 package utlis;
 
+import clients.LoginClient;
 import clients.UsuarioClient;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import factories.UsuarioFactory;
 import io.restassured.response.Response;
+import models.LoginModel;
+import models.UsuarioModel;
 import report.ExtentReportManager;
 
 public class UsuarioHelper {
-
-    private int extrairId(Response response) {
-        return response.path("id");
-    }
-
-    public static String extrairEmail(Response response) {
-        return response.path("email");
-    }
 
     public static void logResposta(String endpoint, Response response) {
         ExtentReportManager.logInfoDetails(endpoint);
@@ -27,21 +23,21 @@ public class UsuarioHelper {
         ExtentReportManager.logHeaders(response.getHeaders());
     }
 
-    public static Response novoUsuario() {
-        var usuario = UsuarioFactory.criarUsuario();
+    public static Response criarUsuarioCadastrar(UsuarioModel usuario) throws JsonProcessingException {
+
         return UsuarioClient.criarUsuario(usuario);
+
     }
 
-    public static Response criarUsuarioComEmail(String email) {
-        var usuario = UsuarioFactory.criarUsuario();
-        usuario.setEmail(email);
-        usuario.setConfirmarEmail(email);
-        return UsuarioClient.criarUsuario(usuario);
+    public static String gerarToken(UsuarioModel usuario) throws JsonProcessingException {
+
+        LoginModel login = new LoginModel();
+        login.setUser(usuario.getEmail());
+        login.setSenha(usuario.getSenha());
+
+        return LoginClient
+                .acessarLogin(login)
+                .getCookie("jwt");
     }
 
-    public static Response criarUsuarioComCPF(String cpf) {
-        var usuario = UsuarioFactory.criarUsuario();
-        usuario.setCpf(cpf);
-        return UsuarioClient.criarUsuario(usuario);
-    }
 }
