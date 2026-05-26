@@ -3,6 +3,7 @@ package queroLerTests.usuarios;
 import baseTest.BaseTest;
 import clients.UsuarioClient;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import factories.UsuarioFactory;
 import io.restassured.module.jsv.JsonSchemaValidator;
 import io.restassured.response.Response;
@@ -14,201 +15,184 @@ import utils.DataFakerUtils;
 import utlis.UsuarioHelper;
 
 import static org.hamcrest.Matchers.equalTo;
-import static utlis.UsuarioHelper.extrairEmail;
 import static utlis.UsuarioHelper.logResposta;
 
 @ExtendWith(Setup.class)
 public class QueroLerUsuarioTest extends BaseTest {
 
     @Test
-    public void cadastrarUsuario() {
-        Response response = UsuarioClient.criarUsuario(UsuarioFactory.criarUsuario());
-
-        int id = response
+    public void cadastrarUsuario() throws JsonProcessingException {
+        UsuarioModel usuario = UsuarioFactory.criarUsuario();
+        Response response = UsuarioHelper.criarUsuarioCadastrar(usuario);
+        response
                 .then()
                 .log().body()
                 .statusCode(201)
-                .extract()
-                .path("id");
-
-        UsuarioClient.buscarUsuarioId(id)
-                .then()
-                .statusCode(200)
-                .body("email", equalTo(extrairEmail(response)))
+                .body("email", equalTo(usuario.getEmail()))
                 .body(JsonSchemaValidator.matchesJsonSchemaInClasspath("schemas/usuario-schema.json"))
-                ;
+        ;
 
         logResposta("POST/usuarios", response);
 
     }
 
     @Test
-    public void buscarUsuarioId() {
-        Response response = UsuarioClient.criarUsuario(UsuarioFactory.criarUsuario());
-
-        int id = response.jsonPath().getInt("id");
-
-        Response response1 = UsuarioClient.buscarUsuarioId(id);
-
-        response1
+    public void buscarUsuario() throws JsonProcessingException {
+        UsuarioModel usuario = UsuarioFactory.criarUsuario();
+        UsuarioHelper.criarUsuarioCadastrar(usuario);
+        String loginToken = UsuarioHelper.gerarToken(usuario);
+        Response response = UsuarioClient.buscarUsuario(loginToken);
+        response
                 .then()
                 .log().body()
                 .statusCode(200)
-                .body("email", equalTo(extrairEmail(response)))
+                .body("email", equalTo(usuario.getEmail()))
                 .body(JsonSchemaValidator.matchesJsonSchemaInClasspath("schemas/usuario-schema.json"))
         ;
 
-        logResposta("GET/usuarios/"+id, response1);
+        logResposta("GET/usuarios", response);
 
     }
 
     @Test
-    public void buscarUsuarioIdInexistente() {
-        int id = 999999;
-
-        Response response = UsuarioClient.buscarUsuarioId(id);
-
-        response
-                .then()
-                .log().body()
-                .statusCode(404)
-        ;
-
-        logResposta("GET/usuarios/"+id, response);
-    }
-
-    @Test
-    public void cadastrarUsuarioEmailDuplicado() {
-        Response response1 = UsuarioHelper.novoUsuario();
-
-        response1.then()
-                .statusCode(201)
-                .log().body()
-        ;
-        Response response2 = UsuarioHelper.criarUsuarioComEmail(response1.path("email"));
-
-        response2.then()
-                .statusCode(500)
-                .log().body()
-                ;
-
-        logResposta("POST/usuarios/", response2);
-
-    }
-
-    @Test
-    public void cadastrarUsuarioCpfDuplicado() {
-        Response response1 = UsuarioHelper.novoUsuario();
-
-        response1.then()
-                .statusCode(201)
-                .log().body()
-        ;
-        Response response2 = UsuarioHelper.criarUsuarioComCPF(response1.path("cpf"));
-
-        response2.then()
-                .statusCode(500)
-                .log().body()
-                ;
-
-        logResposta("POST/usuarios/", response2);
-
-    }
-
-    @Test
-    public void atualizacaoNomeUsuarioId() {
+    public void cadastrarUsuarioEmailDuplicado() throws JsonProcessingException {
         UsuarioModel usuario = UsuarioFactory.criarUsuario();
-
-        Response response = UsuarioClient.criarUsuario(usuario);
-
+        Response response = UsuarioHelper.criarUsuarioCadastrar(usuario);
         response
                 .then()
                 .log().body()
+                .statusCode(201)
+                .body("email", equalTo(usuario.getEmail()))
+                .body(JsonSchemaValidator.matchesJsonSchemaInClasspath("schemas/usuario-schema.json"))
         ;
 
-        int id = response.jsonPath().getInt("id");
+        UsuarioModel usuarioDuplicadoEmail = UsuarioFactory.criarUsuario();
+        usuarioDuplicadoEmail.setEmail(usuario.getEmail());
+        usuarioDuplicadoEmail.setConfirmarEmail(usuario.getEmail());
+        Response responseDuplicadoEmail = UsuarioHelper.criarUsuarioCadastrar(usuarioDuplicadoEmail);
+        responseDuplicadoEmail
+                .then()
+                .log().body()
+                .statusCode(409)
+                .body(equalTo("E-mail já cadastrado"))
+        ;
 
-        usuario.setNome(DataFakerUtils.nome());
+        logResposta("POST/usuarios", responseDuplicadoEmail);
 
-        Response responseAtualizar = UsuarioClient.atualizarUsuario(id, usuario);
+    }
+
+    @Test
+    public void cadastrarUsuarioCpfDuplicado() throws JsonProcessingException {
+        UsuarioModel usuario = UsuarioFactory.criarUsuario();
+        Response response = UsuarioHelper.criarUsuarioCadastrar(usuario);
+        response
+                .then()
+                .log().body()
+                .statusCode(201)
+                .body("email", equalTo(usuario.getEmail()))
+                .body(JsonSchemaValidator.matchesJsonSchemaInClasspath("schemas/usuario-schema.json"))
+        ;
+
+        UsuarioModel usuarioDuplicadoCpf = UsuarioFactory.criarUsuario();
+        usuarioDuplicadoCpf.setCpf(usuario.getCpf());
+        Response responseDuplicadoCpf = UsuarioHelper.criarUsuarioCadastrar(usuarioDuplicadoCpf);
+        responseDuplicadoCpf
+                .then()
+                .log().body()
+                .statusCode(409)
+                .body(equalTo("CPF já cadastrado"))
+        ;
+
+        logResposta("POST/usuarios", responseDuplicadoCpf);
+
+    }
+
+    @Test
+    public void atualizacaoNomeUsuario() throws JsonProcessingException {
+        UsuarioModel usuario = UsuarioFactory.criarUsuario();
+        Response response = UsuarioHelper.criarUsuarioCadastrar(usuario);
+        response
+                .then()
+                .log().body()
+                .statusCode(201);
+
+        String loginToken = UsuarioHelper.gerarToken(usuario);
+
+        usuario.setNome("Nome do teste");
+
+        Response responseAtualizar = UsuarioClient.atualizarUsuario(loginToken, usuario);
 
         responseAtualizar
                 .then()
+                .log().body()
                 .statusCode(204)
-                ;
+        ;
 
-        logResposta("PUT/usuarios/"+id, responseAtualizar);
+        logResposta("PUT/usuarios", responseAtualizar);
 
     }
 
     @Test
-    public void atualizacaoEmailUsuarioId() {
+    public void atualizacaoEmailUsuario() throws JsonProcessingException {
         UsuarioModel usuario = UsuarioFactory.criarUsuario();
-
-        Response response = UsuarioClient.criarUsuario(usuario);
-
+        Response response = UsuarioHelper.criarUsuarioCadastrar(usuario);
         response
                 .then()
                 .log().body()
-        ;
+                .statusCode(201);
 
-        int id = response.jsonPath().getInt("id");
-
+        String loginToken = UsuarioHelper.gerarToken(usuario);
         usuario.setEmail(DataFakerUtils.email());
 
-        Response responseAtualizar = UsuarioClient.atualizarUsuario(id, usuario);
+        Response responseAtualizar = UsuarioClient.atualizarUsuario(loginToken, usuario);
 
         responseAtualizar
                 .then()
+                .log().body()
                 .statusCode(204)
-                ;
+        ;
 
-        logResposta("PUT/usuarios/"+id, responseAtualizar);
-
+        logResposta("PUT/usuarios", responseAtualizar);
     }
 
     @Test
-    public void atualizacaoCpfUsuarioId() {
+    public void atualizacaoCpfUsuario() throws JsonProcessingException {
         UsuarioModel usuario = UsuarioFactory.criarUsuario();
-
-        Response response = UsuarioClient.criarUsuario(usuario);
-
+        Response response = UsuarioHelper.criarUsuarioCadastrar(usuario);
         response
                 .then()
                 .log().body()
-        ;
+                .statusCode(201);
 
-        int id = response.jsonPath().getInt("id");
+        String loginToken = UsuarioHelper.gerarToken(usuario);
 
         usuario.setCpf(DataFakerUtils.cpf());
 
-        Response responseAtualizar = UsuarioClient.atualizarUsuario(id, usuario);
+        Response responseAtualizar = UsuarioClient.atualizarUsuario(loginToken, usuario);
 
         responseAtualizar
                 .then()
+                .log().body()
                 .statusCode(204)
         ;
 
-        logResposta("PUT/usuarios/"+id, responseAtualizar);
-
+        logResposta("PUT/usuarios", responseAtualizar);
     }
 
     @Test
-    public void atualizacaoDadosAdicionaisUsuarioId() {
+    public void atualizacaoDadosAdicionaisUsuario() throws JsonProcessingException {
+
         UsuarioModel usuario = UsuarioFactory.criarUsuario();
-
-        Response response = UsuarioClient.criarUsuario(usuario);
-
+        Response response = UsuarioHelper.criarUsuarioCadastrar(usuario);
         response
                 .then()
                 .log().body()
-        ;
+                .statusCode(201);
 
-        int id = response.jsonPath().getInt("id");
-
+        String loginToken = UsuarioHelper.gerarToken(usuario);
         usuario = UsuarioFactory.dadosAdicionaisUsuario();
 
-        Response responseAtualizar = UsuarioClient.atualizarUsuarioDadoAdicionais(id, usuario);
+        Response responseAtualizar = UsuarioClient.atualizarUsuarioDadoAdicionais(loginToken, usuario);
 
         responseAtualizar
                 .then()
@@ -216,48 +200,47 @@ public class QueroLerUsuarioTest extends BaseTest {
                 .statusCode(204)
         ;
 
-        logResposta("PUT/usuarios/"+id+"/dados-adicionais", responseAtualizar);
+        logResposta("PUT/usuarios/dados-adicionais", responseAtualizar);
 
     }
 
     @Test
-    public void atualizacaoAlterarSenhaUsuarioId() {
+    public void atualizacaoAlterarSenhaUsuario() throws JsonProcessingException {
+
         UsuarioModel usuario = UsuarioFactory.criarUsuario();
-
-        Response response = UsuarioClient.criarUsuario(usuario);
-
+        Response response = UsuarioHelper.criarUsuarioCadastrar(usuario);
         response
                 .then()
                 .log().body()
-        ;
+                .statusCode(201);
 
-        int id = response.jsonPath().getInt("id");
+        String loginToken = UsuarioHelper.gerarToken(usuario);
 
-        Response responseAtualizar = UsuarioClient.atualizarUsuarioAlterarSenha(id, usuario.getSenha(), "Teste@321");
+        Response responseAtualizar = UsuarioClient.atualizarUsuarioAlterarSenha(loginToken, usuario.getSenha(), "Teste@321");
 
         responseAtualizar
                 .then()
+                .log().body()
                 .statusCode(204)
         ;
 
-        logResposta("PUT/usuarios/"+id+"/alterar-senha", responseAtualizar);
+        logResposta("PUT/usuarios", responseAtualizar);
 
     }
 
     @Test
-    public void atualizacaoAlterarSenhaSemLetraMaiusculaUsuarioId() {
+    public void atualizacaoAlterarSenhaSemLetraMaiusculaUsuario() throws JsonProcessingException {
+
         UsuarioModel usuario = UsuarioFactory.criarUsuario();
-
-        Response response = UsuarioClient.criarUsuario(usuario);
-
+        Response response = UsuarioHelper.criarUsuarioCadastrar(usuario);
         response
                 .then()
                 .log().body()
-        ;
+                .statusCode(201);
 
-        int id = response.jsonPath().getInt("id");
+        String loginToken = UsuarioHelper.gerarToken(usuario);
 
-        Response responseAtualizar = UsuarioClient.atualizarUsuarioAlterarSenha(id, usuario.getSenha(), "123456a@");
+        Response responseAtualizar = UsuarioClient.atualizarUsuarioAlterarSenha(loginToken, usuario.getSenha(), "123456a@");
 
         responseAtualizar
                 .then()
@@ -266,24 +249,23 @@ public class QueroLerUsuarioTest extends BaseTest {
                 .body(equalTo("A senha deve conter pelo menos uma letra maiúscula."))
         ;
 
-        logResposta("PUT/usuarios/"+id+"/alterar-senha", responseAtualizar);
+        logResposta("PUT/usuarios/alterar-senha", responseAtualizar);
 
     }
 
     @Test
-    public void atualizacaoAlterarSenhaSemLetraMinusculaUsuarioId() {
+    public void atualizacaoAlterarSenhaSemLetraMinusculaUsuario() throws JsonProcessingException {
+
         UsuarioModel usuario = UsuarioFactory.criarUsuario();
-
-        Response response = UsuarioClient.criarUsuario(usuario);
-
+        Response response = UsuarioHelper.criarUsuarioCadastrar(usuario);
         response
                 .then()
                 .log().body()
-        ;
+                .statusCode(201);
 
-        int id = response.jsonPath().getInt("id");
+        String loginToken = UsuarioHelper.gerarToken(usuario);
 
-        Response responseAtualizar = UsuarioClient.atualizarUsuarioAlterarSenha(id, usuario.getSenha(), "123456A@");
+        Response responseAtualizar = UsuarioClient.atualizarUsuarioAlterarSenha(loginToken,usuario.getSenha(), "123456A@");
 
         responseAtualizar
                 .then()
@@ -292,24 +274,23 @@ public class QueroLerUsuarioTest extends BaseTest {
                 .body(equalTo("A senha deve conter pelo menos uma letra minúscula."))
         ;
 
-        logResposta("PUT/usuarios/"+id+"/alterar-senha", responseAtualizar);
+        logResposta("PUT/usuarios/alterar-senha", responseAtualizar);
 
     }
 
     @Test
-    public void atualizacaoAlterarSenhaMinimo8CaracteresUsuarioId() {
+    public void atualizacaoAlterarSenhaMinimo8CaracteresUsuario() throws JsonProcessingException {
+
         UsuarioModel usuario = UsuarioFactory.criarUsuario();
-
-        Response response = UsuarioClient.criarUsuario(usuario);
-
+        Response response = UsuarioHelper.criarUsuarioCadastrar(usuario);
         response
                 .then()
                 .log().body()
-        ;
+                .statusCode(201);
 
-        int id = response.jsonPath().getInt("id");
+        String loginToken = UsuarioHelper.gerarToken(usuario);
 
-        Response responseAtualizar = UsuarioClient.atualizarUsuarioAlterarSenha(id, usuario.getSenha(), "123456");
+        Response responseAtualizar = UsuarioClient.atualizarUsuarioAlterarSenha(loginToken, usuario.getSenha(), "123456");
 
         responseAtualizar
                 .then()
@@ -318,24 +299,23 @@ public class QueroLerUsuarioTest extends BaseTest {
                 .body(equalTo("A senha deve ter no mínimo 8 caracteres."))
         ;
 
-        logResposta("PUT/usuarios/"+id+"/alterar-senha", responseAtualizar);
+        logResposta("PUT/usuarios/alterar-senha", responseAtualizar);
 
     }
 
     @Test
-    public void atualizacaoAlterarSenhaSemCaracterEspecialUsuarioId() {
+    public void atualizacaoAlterarSenhaSemCaracterEspecialUsuario() throws JsonProcessingException {
+
         UsuarioModel usuario = UsuarioFactory.criarUsuario();
-
-        Response response = UsuarioClient.criarUsuario(usuario);
-
+        Response response = UsuarioHelper.criarUsuarioCadastrar(usuario);
         response
                 .then()
                 .log().body()
-        ;
+                .statusCode(201);
 
-        int id = response.jsonPath().getInt("id");
+        String loginToken = UsuarioHelper.gerarToken(usuario);
 
-        Response responseAtualizar = UsuarioClient.atualizarUsuarioAlterarSenha(id, usuario.getSenha(), "123456Aa");
+        Response responseAtualizar = UsuarioClient.atualizarUsuarioAlterarSenha(loginToken, usuario.getSenha(), "123456Aa");
 
         responseAtualizar
                 .then()
@@ -344,24 +324,23 @@ public class QueroLerUsuarioTest extends BaseTest {
                 .body(equalTo("A senha deve conter pelo menos um caractere especial."))
         ;
 
-        logResposta("PUT/usuarios/"+id+"/alterar-senha", responseAtualizar);
+        logResposta("PUT/usuarios/alterar-senha", responseAtualizar);
 
     }
 
     @Test
-    public void atualizacaoAlterarSenhaSemNumeroUsuarioId() {
+    public void atualizacaoAlterarSenhaSemNumeroUsuario() throws JsonProcessingException {
+
         UsuarioModel usuario = UsuarioFactory.criarUsuario();
-
-        Response response = UsuarioClient.criarUsuario(usuario);
-
+        Response response = UsuarioHelper.criarUsuarioCadastrar(usuario);
         response
                 .then()
                 .log().body()
-        ;
+                .statusCode(201);
 
-        int id = response.jsonPath().getInt("id");
+        String loginToken = UsuarioHelper.gerarToken(usuario);
 
-        Response responseAtualizar = UsuarioClient.atualizarUsuarioAlterarSenha(id, usuario.getSenha(), "abcdABCD");
+        Response responseAtualizar = UsuarioClient.atualizarUsuarioAlterarSenha(loginToken, usuario.getSenha(), "abcdABCD");
 
         responseAtualizar
                 .then()
@@ -370,43 +349,48 @@ public class QueroLerUsuarioTest extends BaseTest {
                 .body(equalTo("A senha deve conter pelo menos um número."))
         ;
 
-        logResposta("PUT/usuarios/"+id+"/alterar-senha", responseAtualizar);
+        logResposta("PUT/usuarios/alterar-senha", responseAtualizar);
 
     }
 
     @Test
-    public void atualizacaoAlterarSenhaIncorretaSenhaAtualUsuarioId() {
+    public void atualizacaoAlterarSenhaIncorretaSenhaAtualUsuario() throws JsonProcessingException {
+
         UsuarioModel usuario = UsuarioFactory.criarUsuario();
-
-        Response response = UsuarioClient.criarUsuario(usuario);
-
+        Response response = UsuarioHelper.criarUsuarioCadastrar(usuario);
         response
                 .then()
                 .log().body()
-        ;
+                .statusCode(201);
 
-        int id = response.jsonPath().getInt("id");
+        String loginToken = UsuarioHelper.gerarToken(usuario);
 
-        Response responseAtualizar = UsuarioClient.atualizarUsuarioAlterarSenha(id, "@TestErro1", "TestNew1@");
+        Response responseAtualizar = UsuarioClient.atualizarUsuarioAlterarSenha(loginToken, "@TestErro1", "TestNew1@");
 
         responseAtualizar
                 .then()
-                .statusCode(400)
                 .log().body()
-                .body(equalTo("A senha deve conter pelo menos um número."))
+                .statusCode(401)
+                .body(equalTo("A senha digitada não corresponde a atual."))
         ;
 
-        logResposta("PUT/usuarios/"+id+"/alterar-senha", responseAtualizar);
+        logResposta("PUT/usuarios/alterar-senha", responseAtualizar);
 
     }
 
     @Test
-    public void deleteUsuarioId() {
-        Response response = UsuarioClient.criarUsuario(UsuarioFactory.criarUsuario());
+    public void deleteUsuarioId() throws JsonProcessingException {
+        UsuarioModel usuario = UsuarioFactory.criarUsuario();
+        Response response = UsuarioHelper.criarUsuarioCadastrar(usuario);
+        response
+                .then()
+                .log().body()
+                .statusCode(201);
 
-        int id = response.jsonPath().getInt("id");
+        String loginToken = UsuarioHelper.gerarToken(usuario);
 
-        Response response1 = UsuarioClient.deleteUsuarioId(id);
+        Response response1 = UsuarioClient.deleteUsuarioId(loginToken);
+        response1.then().statusCode(204);
 
         logResposta("DELETE/usuarios", response1);
 
