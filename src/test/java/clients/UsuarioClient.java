@@ -4,9 +4,13 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.restassured.http.ContentType;
 import io.restassured.response.Response;
+import io.restassured.specification.RequestSpecification;
 import models.UsuarioModel;
 import utlis.EndPoints;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -42,13 +46,19 @@ public class UsuarioClient {
                 .put(EndPoints.USUARIOS);
     }
 
-    public static Response atualizarUsuarioDadoAdicionais(String token, UsuarioModel usuario) throws JsonProcessingException {
+    public static Response atualizarUsuarioDadoAdicionais(String token, UsuarioModel usuario, File imagem) throws IOException {
         ObjectMapper objectMapper = new ObjectMapper();
-        return given()
+        String contentType = Files.probeContentType(imagem.toPath());
+
+        RequestSpecification request = given()
                 .cookie("jwt", token)
                 .contentType(ContentType.MULTIPART)
-                .multiPart("dados", objectMapper.writeValueAsString(usuario),"application/json")
-            .when()
+                .multiPart("dados", objectMapper.writeValueAsString(usuario),"application/json");
+        if (imagem != null) {
+            request.multiPart("imagem", imagem, contentType);
+        }
+        return request
+                .when()
                 .put(EndPoints.USUARIOS_DADOS_ADICIONAIS);
     }
 

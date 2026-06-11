@@ -2,8 +2,6 @@ package utils;
 
 import net.datafaker.Faker;
 
-import java.nio.charset.StandardCharsets;
-import java.util.Base64;
 import java.util.Locale;
 
 public class DataFakerUtils {
@@ -23,7 +21,7 @@ public class DataFakerUtils {
     }
 
     public static String dataNascimento() {
-        return faker.timeAndDate().birthday("yyyy-MM-dd");
+        return faker.timeAndDate().birthday("dd/MM/yyyy");
     }
 
     public static String cidade() {
@@ -46,6 +44,54 @@ public class DataFakerUtils {
         String restantes = faker.regexify("[A-Za-z0-9@#$%&*!]{4}");
 
         return maiuscula + minuscula + numero + especial + restantes;
+    }
+
+    public static String nomeAleatorio() {
+        return faker.letterify("??????????");
+    }
+
+    public static String titulo() {
+        return faker.book().title();
+    }
+
+    public static String isbn13() {
+        return faker.number().digits(13);
+    }
+
+    public static String isbn10() {
+        return faker.number().digits(10);
+    }
+
+    public static String editora() {
+        return faker.book().publisher();
+    }
+
+    public static String ano() {
+        return String.valueOf(faker.number().numberBetween(1900, 2026));
+    }
+
+    public static int numeroDePagina() {
+        return faker.number().numberBetween(50, 1200);
+    }
+
+    public static String idioma() {
+        return faker.options().option(
+                "PORTUGUES",
+                "INGLES",
+                "ESPANHOL",
+                "FRANCES",
+                "ALEMAO",
+                "ITALIANO",
+                "JAPONES"
+        );
+    }
+
+    public static String sinopse() {
+        String sinopse;
+        do {
+            sinopse = faker.lorem().paragraph();
+        } while (sinopse.length() < 50);
+        return sinopse;
     }
 
 }

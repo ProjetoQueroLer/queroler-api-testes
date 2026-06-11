@@ -14,6 +14,9 @@ import report.Setup;
 import utils.DataFakerUtils;
 import utlis.UsuarioHelper;
 
+import java.io.File;
+import java.io.IOException;
+
 import static org.hamcrest.Matchers.equalTo;
 import static utlis.UsuarioHelper.logResposta;
 
@@ -40,7 +43,7 @@ public class QueroLerUsuarioTest extends BaseTest {
     public void buscarUsuario() throws JsonProcessingException {
         UsuarioModel usuario = UsuarioFactory.criarUsuario();
         UsuarioHelper.criarUsuarioCadastrar(usuario);
-        String loginToken = UsuarioHelper.gerarToken(usuario);
+        String loginToken = UsuarioHelper.acessarLoginGerarToken(usuario);
         Response response = UsuarioClient.buscarUsuario(loginToken);
         response
                 .then()
@@ -74,7 +77,7 @@ public class QueroLerUsuarioTest extends BaseTest {
                 .then()
                 .log().body()
                 .statusCode(409)
-                .body(equalTo("E-mail já cadastrado"))
+                .body(equalTo("O email '"+usuario.getEmail()+"' já está cadastrado."))
         ;
 
         logResposta("POST/usuarios", responseDuplicadoEmail);
@@ -100,7 +103,7 @@ public class QueroLerUsuarioTest extends BaseTest {
                 .then()
                 .log().body()
                 .statusCode(409)
-                .body(equalTo("CPF já cadastrado"))
+                .body(equalTo("CPF já cadastrado."))
         ;
 
         logResposta("POST/usuarios", responseDuplicadoCpf);
@@ -116,7 +119,7 @@ public class QueroLerUsuarioTest extends BaseTest {
                 .log().body()
                 .statusCode(201);
 
-        String loginToken = UsuarioHelper.gerarToken(usuario);
+        String loginToken = UsuarioHelper.acessarLoginGerarToken(usuario);
 
         usuario.setNome("Nome do teste");
 
@@ -141,7 +144,7 @@ public class QueroLerUsuarioTest extends BaseTest {
                 .log().body()
                 .statusCode(201);
 
-        String loginToken = UsuarioHelper.gerarToken(usuario);
+        String loginToken = UsuarioHelper.acessarLoginGerarToken(usuario);
         usuario.setEmail(DataFakerUtils.email());
 
         Response responseAtualizar = UsuarioClient.atualizarUsuario(loginToken, usuario);
@@ -164,7 +167,7 @@ public class QueroLerUsuarioTest extends BaseTest {
                 .log().body()
                 .statusCode(201);
 
-        String loginToken = UsuarioHelper.gerarToken(usuario);
+        String loginToken = UsuarioHelper.acessarLoginGerarToken(usuario);
 
         usuario.setCpf(DataFakerUtils.cpf());
 
@@ -180,7 +183,7 @@ public class QueroLerUsuarioTest extends BaseTest {
     }
 
     @Test
-    public void atualizacaoDadosAdicionaisUsuario() throws JsonProcessingException {
+    public void atualizacaoDadosAdicionaisUsuario() throws IOException {
 
         UsuarioModel usuario = UsuarioFactory.criarUsuario();
         Response response = UsuarioHelper.criarUsuarioCadastrar(usuario);
@@ -189,10 +192,11 @@ public class QueroLerUsuarioTest extends BaseTest {
                 .log().body()
                 .statusCode(201);
 
-        String loginToken = UsuarioHelper.gerarToken(usuario);
+        String loginToken = UsuarioHelper.acessarLoginGerarToken(usuario);
         usuario = UsuarioFactory.dadosAdicionaisUsuario();
 
-        Response responseAtualizar = UsuarioClient.atualizarUsuarioDadoAdicionais(loginToken, usuario);
+        File imagem = new File("src/test/resources/imagens/png.png");
+        Response responseAtualizar = UsuarioClient.atualizarUsuarioDadoAdicionais(loginToken, usuario, imagem);
 
         responseAtualizar
                 .then()
@@ -214,7 +218,7 @@ public class QueroLerUsuarioTest extends BaseTest {
                 .log().body()
                 .statusCode(201);
 
-        String loginToken = UsuarioHelper.gerarToken(usuario);
+        String loginToken = UsuarioHelper.acessarLoginGerarToken(usuario);
 
         Response responseAtualizar = UsuarioClient.atualizarUsuarioAlterarSenha(loginToken, usuario.getSenha(), "Teste@321");
 
@@ -238,7 +242,7 @@ public class QueroLerUsuarioTest extends BaseTest {
                 .log().body()
                 .statusCode(201);
 
-        String loginToken = UsuarioHelper.gerarToken(usuario);
+        String loginToken = UsuarioHelper.acessarLoginGerarToken(usuario);
 
         Response responseAtualizar = UsuarioClient.atualizarUsuarioAlterarSenha(loginToken, usuario.getSenha(), "123456a@");
 
@@ -263,7 +267,7 @@ public class QueroLerUsuarioTest extends BaseTest {
                 .log().body()
                 .statusCode(201);
 
-        String loginToken = UsuarioHelper.gerarToken(usuario);
+        String loginToken = UsuarioHelper.acessarLoginGerarToken(usuario);
 
         Response responseAtualizar = UsuarioClient.atualizarUsuarioAlterarSenha(loginToken,usuario.getSenha(), "123456A@");
 
@@ -288,7 +292,7 @@ public class QueroLerUsuarioTest extends BaseTest {
                 .log().body()
                 .statusCode(201);
 
-        String loginToken = UsuarioHelper.gerarToken(usuario);
+        String loginToken = UsuarioHelper.acessarLoginGerarToken(usuario);
 
         Response responseAtualizar = UsuarioClient.atualizarUsuarioAlterarSenha(loginToken, usuario.getSenha(), "123456");
 
@@ -313,7 +317,7 @@ public class QueroLerUsuarioTest extends BaseTest {
                 .log().body()
                 .statusCode(201);
 
-        String loginToken = UsuarioHelper.gerarToken(usuario);
+        String loginToken = UsuarioHelper.acessarLoginGerarToken(usuario);
 
         Response responseAtualizar = UsuarioClient.atualizarUsuarioAlterarSenha(loginToken, usuario.getSenha(), "123456Aa");
 
@@ -338,7 +342,7 @@ public class QueroLerUsuarioTest extends BaseTest {
                 .log().body()
                 .statusCode(201);
 
-        String loginToken = UsuarioHelper.gerarToken(usuario);
+        String loginToken = UsuarioHelper.acessarLoginGerarToken(usuario);
 
         Response responseAtualizar = UsuarioClient.atualizarUsuarioAlterarSenha(loginToken, usuario.getSenha(), "abcdABCD");
 
@@ -363,7 +367,7 @@ public class QueroLerUsuarioTest extends BaseTest {
                 .log().body()
                 .statusCode(201);
 
-        String loginToken = UsuarioHelper.gerarToken(usuario);
+        String loginToken = UsuarioHelper.acessarLoginGerarToken(usuario);
 
         Response responseAtualizar = UsuarioClient.atualizarUsuarioAlterarSenha(loginToken, "@TestErro1", "TestNew1@");
 
@@ -387,7 +391,7 @@ public class QueroLerUsuarioTest extends BaseTest {
                 .log().body()
                 .statusCode(201);
 
-        String loginToken = UsuarioHelper.gerarToken(usuario);
+        String loginToken = UsuarioHelper.acessarLoginGerarToken(usuario);
 
         Response response1 = UsuarioClient.deleteUsuarioId(loginToken);
         response1.then().statusCode(204);
