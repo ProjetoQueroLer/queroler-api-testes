@@ -3,7 +3,6 @@ package utlis;
 import clients.LoginClient;
 import clients.UsuarioClient;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import factories.UsuarioFactory;
 import io.restassured.response.Response;
 import models.LoginModel;
 import models.UsuarioModel;
@@ -29,7 +28,7 @@ public class UsuarioHelper {
 
     }
 
-    public static String gerarToken(UsuarioModel usuario) {
+    public static String acessarLoginGerarToken(UsuarioModel usuario) {
 
         LoginModel login = new LoginModel();
         login.setUser(usuario.getEmail());
