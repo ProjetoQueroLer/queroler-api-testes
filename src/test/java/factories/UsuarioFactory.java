@@ -30,7 +30,6 @@ public class UsuarioFactory {
         usuario.setCidade(DataFakerUtils.cidade());
         usuario.setEstado(DataFakerUtils.estado());
         usuario.setPais(DataFakerUtils.pais());
-        usuario.setFoto(CarregarImagem.carregarImagemBase64());
 
         return usuario;
     }
