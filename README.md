@@ -123,15 +123,25 @@ GET /usuarios
 PUT /usuarios  
 POST /usuarios  
 DELETE /usuarios  
-PUT /usuario/dados-adicionais  
-PUT /usuario/alterar-senha  
-PUT /usuario/administrador (manutenção)    
-POST /usuarios/livro (manutenção)  
+PUT /usuarios/dados-adicionais  
+PUT /usuarios/alterar-senha  
+PUT /usuarios/administrador **(manutenção)**    
+POST /usuarios/livro  
 ### Login
 POST /logins  
+### Livro
+PUT /livros/{id}/usuario  
+GET /livros/{id}/capa  
+PUT /livros/{id}/capa  
+GET /livros  
+POST /livros  
+GET /livros/{id}/comentarios **(manutenção)**  
+GET /livros/tela_de_leitura **(manutenção)**  
+GET /livros/populares **(manutenção)**  
+GET /livros/detalhados **(manutenção)**  
+GET /livros/buscar/{isbn}
 ## EM BREVE
 ### Notificação
-### Livro
 ### Documento
 
 ------------
