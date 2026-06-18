@@ -10,6 +10,8 @@ import io.restassured.response.Response;
 import models.UsuarioModel;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import report.Setup;
 import utils.DataFakerUtils;
 import utlis.UsuarioHelper;
@@ -33,6 +35,111 @@ public class QueroLerUsuarioTest extends BaseTest {
                 .statusCode(201)
                 .body("email", equalTo(usuario.getEmail()))
                 .body(JsonSchemaValidator.matchesJsonSchemaInClasspath("schemas/usuario-schema.json"))
+        ;
+
+        logResposta("POST/usuarios", response);
+
+    }
+
+    @Test
+    public void cadastrarUsuarioComNomesMais80caracteres() throws JsonProcessingException {
+        UsuarioModel usuario = UsuarioFactory.criarUsuarioNomeMais80Caracteres();
+        Response response = UsuarioHelper.criarUsuarioCadastrar(usuario);
+        response
+                .then()
+                .log().body()
+                .statusCode(400)
+                .body("[0].mensagem", equalTo("O campo deve ter no máximo 80 caracteres"))
+                .body("[0].campo", equalTo("nome"))
+        ;
+
+        logResposta("POST/usuarios", response);
+
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {
+            "64",
+            "65",
+            "247"
+    })
+    public void cadastrarUsuarioComEmailMais256caracteres(String numero) throws JsonProcessingException {
+        UsuarioModel usuario = UsuarioFactory.criarUsuarioEmailMais256Caracteres(numero);
+        Response response = UsuarioHelper.criarUsuarioCadastrar(usuario);
+        response
+                .then()
+                .log().body()
+                .statusCode(400)
+                .body("[0].mensagem", equalTo("E-mail inválido"))
+                .body("[0].campo", equalTo("email"))
+        ;
+
+        logResposta("POST/usuarios", response);
+
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {
+            "@hotmail.com",
+            "ana@",
+            "ana",
+            "ana @hotmail.com",
+            "ana@ hotmail.com",
+            "anahotmail.com",
+            "ana@@hotmail.com",
+            "ana@teste@hotmail.com",
+            "ana.hotmail.com",
+            "ana@.com",
+            "ana@hotmail..com",
+            "ana<>@hotmail.com",
+            "ana#hotmail.com"
+    })
+    public void cadastrarUsuarioComEmailInvalido(String email) throws JsonProcessingException {
+        UsuarioModel usuario = UsuarioFactory.criarUsuarioEmailInvalido(email);
+        Response response = UsuarioHelper.criarUsuarioCadastrar(usuario);
+        response
+                .then()
+                .log().body()
+                .statusCode(400)
+                .body("[0].mensagem", equalTo("E-mail inválido"))
+                .body("[0].campo", equalTo("email"))
+        ;
+
+        logResposta("POST/usuarios", response);
+
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {
+            "ana@hotmailcom",
+            "ana@gma!l.com",
+            ""
+    })
+    public void cadastrarUsuarioComEmailInvalidoEspecial(String email) throws JsonProcessingException {
+        UsuarioModel usuario = UsuarioFactory.criarUsuarioEmailInvalido(email);
+        Response response = UsuarioHelper.criarUsuarioCadastrar(usuario);
+        response
+                .then()
+                .log().body()
+                .statusCode(400)
+                .body("[0].mensagem", equalTo("E-mail inválido"))
+                .body("[0].campo", equalTo("email"))
+        ;
+
+        logResposta("POST/usuarios", response);
+
+    }
+
+    @Test
+    public void cadastrarUsuarioEmailDiferenteEmailConfirmar() throws JsonProcessingException {
+        UsuarioModel usuario = UsuarioFactory.criarUsuarioEmailDiferenteEmailConfirmar();
+        Response response = UsuarioHelper.criarUsuarioCadastrar(usuario);
+        response
+                .then()
+                .log().body()
+                .statusCode(400)
+                .body("[0].campo", equalTo("confirmarEmail"))
+                .body("[0].mensagem", equalTo("Email digitada não corresponde email confirmar"));
         ;
 
         logResposta("POST/usuarios", response);
