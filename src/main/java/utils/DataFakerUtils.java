@@ -12,8 +12,16 @@ public class DataFakerUtils {
         return faker.name().fullName();
     }
 
+    public static String nomeMais80Caracteres() {
+        return faker.regexify("[a-zA-Z]{81}");
+    }
+
     public static String email() {
         return faker.internet().emailAddress();
+    }
+
+    public static String emailMais256Caracteres(String numero) {
+        return faker.regexify("[a-zA-Z0-9]{"+numero+"}") + "@teste.com";
     }
 
     public static String cpf() {
