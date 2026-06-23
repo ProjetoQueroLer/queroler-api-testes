@@ -39,4 +39,16 @@ public class UsuarioHelper {
                 .getCookie("jwt");
     }
 
+    public static String loginLeitor() {
+        LoginModel usuarioLogin = new LoginModel();
+        usuarioLogin.setUser(ConfigProperties.get("leitor.email"));
+        usuarioLogin.setSenha(ConfigProperties.get("leitor.password"));
+
+        return LoginClient.acessarLogin(usuarioLogin)
+                .then()
+                .statusCode(200)
+                .extract()
+                .cookie("jwt");
+    }
+
 }
