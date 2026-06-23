@@ -1,6 +1,5 @@
 package clients;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.restassured.http.ContentType;
 import io.restassured.response.Response;
@@ -17,12 +16,11 @@ public class LivrosClient {
 
     public static Response criarLivro(String token, Object livro) throws IOException {
         ObjectMapper mapper = new ObjectMapper();
-        String dadosJson = mapper.writeValueAsString(livro);
 
         RequestSpecification request = given()
                 .cookie("jwt", token)
                 .contentType(ContentType.MULTIPART)
-                .multiPart("dados", dadosJson, "application/json");
+                .multiPart("dados", mapper.writeValueAsString(livro), "application/json");
         return request
                 .when()
                 .post(EndPoints.LIVROS);
@@ -30,7 +28,6 @@ public class LivrosClient {
 
     public static Response criarLivro(String token, Object livro, File imagem) throws IOException {
         ObjectMapper objectMapper = new ObjectMapper();
-//        String dadosJson = mapper.writeValueAsString(livro);
         String contentType = Files.probeContentType(imagem.toPath());
 
         RequestSpecification request = given()
@@ -43,6 +40,17 @@ public class LivrosClient {
         return request
                 .when()
                 .post(EndPoints.LIVROS);
+    }
+
+    public static Response atualizarCapaLivro(String token, Integer idLivro, File imagem) {
+
+        return given()
+                .cookie("jwt", token)
+                .contentType(ContentType.MULTIPART)
+                .multiPart("imagem", imagem, "image/jpeg")
+                .pathParam("id", idLivro)
+            .when()
+                .put(EndPoints.LIVROS_ID_CAPA);
     }
 
     public static Response buscarLivros(String token) {
