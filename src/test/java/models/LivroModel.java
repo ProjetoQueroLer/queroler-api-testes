@@ -11,7 +11,7 @@ public class LivroModel {
     private String isbn;
     private String editora;
     private String anoDePublicacao;
-    private int numeroDePaginas;
+    private Integer numeroDePaginas;
     private String idioma;
     private String sinopse;
     private List<AutorModel> autores;
