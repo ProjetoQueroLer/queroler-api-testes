@@ -16,4 +16,8 @@ public class LivroHelper {
     public static Response criarLivroCadastrar(String token, LivroModel livro) throws IOException {
         return LivrosClient.criarLivro(token, livro);
     }
+
+    public static Response atualizarCapaLivro(String token, Integer idLivro, File imagem) {
+        return LivrosClient.atualizarCapaLivro(token, idLivro, imagem);
+    }
 }
