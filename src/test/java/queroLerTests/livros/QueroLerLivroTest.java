@@ -2,19 +2,17 @@ package queroLerTests.livros;
 
 import baseTest.BaseTest;
 import clients.LivrosClient;
-import clients.LoginClient;
 import factories.LivroFactory;
 import io.restassured.response.Response;
 import models.LivroModel;
-import models.LoginModel;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import report.Setup;
-import utlis.ConfigProperties;
-import utlis.LivroHelper;
-import utlis.UsuarioHelper;
+import utils.ConfigProperties;
+import utils.LivroHelper;
+import utils.UsuarioHelper;
 
 import java.io.File;
 import java.io.IOException;
@@ -22,7 +20,7 @@ import java.util.List;
 import java.util.Map;
 
 import static org.hamcrest.Matchers.equalTo;
-import static utlis.UsuarioHelper.logResposta;
+import static utils.UsuarioHelper.logResposta;
 
 @ExtendWith(Setup.class)
 public class QueroLerLivroTest extends BaseTest {

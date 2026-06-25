@@ -2,7 +2,7 @@ package clients;
 
 import io.restassured.http.ContentType;
 import io.restassured.response.Response;
-import utlis.EndPoints;
+import utils.EndPoints;
 
 import static io.restassured.RestAssured.given;
 
