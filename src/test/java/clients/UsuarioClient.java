@@ -6,7 +6,7 @@ import io.restassured.http.ContentType;
 import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
 import models.UsuarioModel;
-import utlis.EndPoints;
+import utils.EndPoints;
 
 import java.io.File;
 import java.io.IOException;
@@ -29,11 +29,33 @@ public class UsuarioClient {
                 .post(EndPoints.USUARIOS);
     }
 
+    public static Response criarUsuario(Object usuario, File imagem) throws IOException {
+        ObjectMapper objectMapper = new ObjectMapper();
+        String contentType = Files.probeContentType(imagem.toPath());
+
+        RequestSpecification request = given()
+                .contentType(ContentType.MULTIPART)
+                .multiPart("dados", objectMapper.writeValueAsString(usuario), "application/json");
+        if (imagem != null) {
+            request.multiPart("imagem", imagem, contentType);
+        }
+        return request
+                .when()
+                .post(EndPoints.USUARIOS);
+    }
+
     public static Response buscarUsuario(String token) {
         return given()
                 .cookie("jwt", token)
             .when()
                 .get(EndPoints.USUARIOS);
+    }
+
+    public static Response buscarUsuarioFoto(String token) {
+        return given()
+                .cookie("jwt", token)
+            .when()
+                .get(EndPoints.USUARIOS_FOTO);
     }
 
     public static Response atualizarUsuario(String token, UsuarioModel usuario) throws JsonProcessingException {
