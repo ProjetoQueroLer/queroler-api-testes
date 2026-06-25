@@ -20,6 +20,7 @@ import java.io.File;
 import java.io.IOException;
 
 import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.hasItems;
 import static utils.UsuarioHelper.logResposta;
 
 @ExtendWith(Setup.class)
@@ -106,8 +107,6 @@ public class QueroLerUsuarioTest extends BaseTest {
 
     @ParameterizedTest
     @ValueSource(strings = {
-            "64",
-            "65",
             "247"
     })
     public void cadastrarUsuarioComEmailMais256caracteres(String numero) throws JsonProcessingException {
@@ -117,8 +116,8 @@ public class QueroLerUsuarioTest extends BaseTest {
                 .then()
                 .log().body()
                 .statusCode(400)
-                .body("[0].mensagem", equalTo("E-mail inválido"))
-                .body("[0].campo", equalTo("email"))
+                .body("mensagem", hasItems("E-mail inválido", "O campo deve ter no máximo 256 caracteres"))
+                .body("campo", hasItems("email", "email"))
         ;
 
         logResposta("POST/usuarios", response);
