@@ -1,4 +1,4 @@
-package utlis;
+package utils;
 
 import clients.LoginClient;
 import clients.UsuarioClient;
@@ -7,6 +7,9 @@ import io.restassured.response.Response;
 import models.LoginModel;
 import models.UsuarioModel;
 import report.ExtentReportManager;
+
+import java.io.File;
+import java.io.IOException;
 
 public class UsuarioHelper {
 
@@ -25,6 +28,12 @@ public class UsuarioHelper {
     public static Response criarUsuarioCadastrar(UsuarioModel usuario) throws JsonProcessingException {
 
         return UsuarioClient.criarUsuario(usuario);
+
+    }
+
+    public static Response criarUsuarioCadastrar(UsuarioModel usuario, File imagem) throws IOException {
+
+        return UsuarioClient.criarUsuario(usuario, imagem);
 
     }
 
