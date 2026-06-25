@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import io.restassured.http.ContentType;
 import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
-import utlis.EndPoints;
+import utils.EndPoints;
 
 import java.io.File;
 import java.io.IOException;

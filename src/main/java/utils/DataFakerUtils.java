@@ -24,6 +24,18 @@ public class DataFakerUtils {
         return faker.regexify("[a-zA-Z0-9]{"+numero+"}") + "@teste.com";
     }
 
+    public static String caracteres(int numero) {
+        StringBuilder aleatorio = new StringBuilder();
+        aleatorio.append(faker.regexify("[a-z]"));
+        aleatorio.append(faker.regexify("[A-Z]"));
+        aleatorio.append(faker.regexify("[0-9]"));
+        aleatorio.append(faker.regexify("[!@#$&]"));
+        if (numero > 4) {
+            aleatorio.append(faker.regexify("[a-zA-Z0-9!@#$&]{" + (numero - 4) + "}"));
+        }
+        return aleatorio.toString();
+    }
+
     public static String cpf() {
         return faker.cpf().valid();
     }

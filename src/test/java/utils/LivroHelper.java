@@ -1,4 +1,4 @@
-package utlis;
+package utils;
 
 import clients.LivrosClient;
 import io.restassured.response.Response;

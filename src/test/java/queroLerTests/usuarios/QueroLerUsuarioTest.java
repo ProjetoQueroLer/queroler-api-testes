@@ -14,19 +14,19 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import report.Setup;
 import utils.DataFakerUtils;
-import utlis.UsuarioHelper;
+import utils.UsuarioHelper;
 
 import java.io.File;
 import java.io.IOException;
 
 import static org.hamcrest.Matchers.equalTo;
-import static utlis.UsuarioHelper.logResposta;
+import static utils.UsuarioHelper.logResposta;
 
 @ExtendWith(Setup.class)
 public class QueroLerUsuarioTest extends BaseTest {
 
     @Test
-    public void cadastrarUsuario() throws JsonProcessingException {
+    public void cadastrarUsuarioSemFoto() throws JsonProcessingException {
         UsuarioModel usuario = UsuarioFactory.criarUsuario();
         Response response = UsuarioHelper.criarUsuarioCadastrar(usuario);
         response
@@ -35,6 +35,53 @@ public class QueroLerUsuarioTest extends BaseTest {
                 .statusCode(201)
                 .body("email", equalTo(usuario.getEmail()))
                 .body(JsonSchemaValidator.matchesJsonSchemaInClasspath("schemas/usuario-schema.json"))
+        ;
+
+        logResposta("POST/usuarios", response);
+
+    }
+
+    @Test
+    public void cadastrarUsuarioComFoto() throws IOException {
+        File imagem = new File("src/test/resources/imagens/jpg.jpg");
+        UsuarioModel usuario = UsuarioFactory.criarUsuario();
+        Response response = UsuarioHelper.criarUsuarioCadastrar(usuario, imagem);
+        response
+                .then()
+                .log().body()
+                .statusCode(201)
+                .body("email", equalTo(usuario.getEmail()))
+                .body(JsonSchemaValidator.matchesJsonSchemaInClasspath("schemas/usuario-schema.json"))
+        ;
+
+        logResposta("POST/usuarios", response);
+
+    }
+
+    @Test
+    public void cadastrarUsuarioSenhaMenos8Caracteres() throws JsonProcessingException {
+        UsuarioModel usuario = UsuarioFactory.criarUsuarioMenos8caracteres();
+        Response response = UsuarioHelper.criarUsuarioCadastrar(usuario);
+        response
+                .then()
+                .log().body()
+                .statusCode(400)
+                .body(equalTo("A senha deve ter no mínimo 8 caracteres."))
+        ;
+
+        logResposta("POST/usuarios", response);
+
+    }
+
+    @Test
+    public void cadastrarUsuarioSenhaMais100Caracteres() throws JsonProcessingException {
+        UsuarioModel usuario = UsuarioFactory.criarUsuarioMais100caracteres();
+        Response response = UsuarioHelper.criarUsuarioCadastrar(usuario);
+        response
+                .then()
+                .log().body()
+                .statusCode(400)
+                .body(equalTo("A senha deve ter no mínimo 8 caracteres."))
         ;
 
         logResposta("POST/usuarios", response);
@@ -147,24 +194,6 @@ public class QueroLerUsuarioTest extends BaseTest {
     }
 
     @Test
-    public void buscarUsuario() throws JsonProcessingException {
-        UsuarioModel usuario = UsuarioFactory.criarUsuario();
-        UsuarioHelper.criarUsuarioCadastrar(usuario);
-        String loginToken = UsuarioHelper.acessarLoginGerarToken(usuario);
-        Response response = UsuarioClient.buscarUsuario(loginToken);
-        response
-                .then()
-                .log().body()
-                .statusCode(200)
-                .body("email", equalTo(usuario.getEmail()))
-                .body(JsonSchemaValidator.matchesJsonSchemaInClasspath("schemas/usuario-schema.json"))
-        ;
-
-        logResposta("GET/usuarios", response);
-
-    }
-
-    @Test
     public void cadastrarUsuarioEmailDuplicado() throws JsonProcessingException {
         UsuarioModel usuario = UsuarioFactory.criarUsuario();
         Response response = UsuarioHelper.criarUsuarioCadastrar(usuario);
@@ -214,6 +243,58 @@ public class QueroLerUsuarioTest extends BaseTest {
         ;
 
         logResposta("POST/usuarios", responseDuplicadoCpf);
+
+    }
+
+    @Test
+    public void buscarUsuario() throws JsonProcessingException {
+        UsuarioModel usuario = UsuarioFactory.criarUsuario();
+        UsuarioHelper.criarUsuarioCadastrar(usuario);
+        String loginToken = UsuarioHelper.acessarLoginGerarToken(usuario);
+        Response response = UsuarioClient.buscarUsuario(loginToken);
+        response
+                .then()
+                .log().body()
+                .statusCode(200)
+                .body("email", equalTo(usuario.getEmail()))
+                .body(JsonSchemaValidator.matchesJsonSchemaInClasspath("schemas/usuario-schema.json"))
+        ;
+
+        logResposta("GET/usuarios", response);
+
+    }
+
+    @Test
+    public void buscarUsuarioComFoto() throws IOException {
+        File imagem = new File("src/test/resources/imagens/perfil.png");
+        UsuarioModel usuario = UsuarioFactory.criarUsuario();
+        UsuarioHelper.criarUsuarioCadastrar(usuario, imagem);
+        String loginToken = UsuarioHelper.acessarLoginGerarToken(usuario);
+        Response response = UsuarioClient.buscarUsuarioFoto(loginToken);
+        response
+                .then()
+                .log().body()
+                .statusCode(200)
+        ;
+
+        logResposta("GET/usuarios/foto", response);
+
+    }
+
+    @Test
+    public void buscarUsuarioSemFoto() throws IOException {
+        UsuarioModel usuario = UsuarioFactory.criarUsuario();
+        UsuarioHelper.criarUsuarioCadastrar(usuario);
+        String loginToken = UsuarioHelper.acessarLoginGerarToken(usuario);
+        Response response = UsuarioClient.buscarUsuarioFoto(loginToken);
+        response
+                .then()
+                .log().body()
+                .statusCode(404)
+                .body(equalTo("Foto não cadastrada"))
+        ;
+
+        logResposta("GET/usuarios/foto", response);
 
     }
 

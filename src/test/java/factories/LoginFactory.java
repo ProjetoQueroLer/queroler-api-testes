@@ -5,7 +5,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import models.LoginModel;
 import models.UsuarioModel;
 import utils.DataFakerUtils;
-import utlis.ConfigProperties;
+import utils.ConfigProperties;
 
 public class LoginFactory {
 

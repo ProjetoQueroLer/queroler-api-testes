@@ -10,7 +10,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import report.Setup;
 
 import static org.hamcrest.Matchers.equalTo;
-import static utlis.UsuarioHelper.logResposta;
+import static utils.UsuarioHelper.logResposta;
 
 @ExtendWith(Setup.class)
 public class QueroLerLoginTest extends BaseTest {
