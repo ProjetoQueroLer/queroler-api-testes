@@ -156,14 +156,12 @@ public class QueroLerLivroTest extends BaseTest {
 
     }
 
-//    @Test
+    @Test
     public void cadastrarLivroIsbn10DigitosComImagemMais10MB() throws IOException {
         String token = UsuarioHelper.loginLeitor();
 
         LivroModel livro = LivroFactory.criarLivroIsbn10();
         File arquivo = new File("src/test/resources/imagens/foto_png.png");
-        System.out.println(arquivo.length());
-        System.out.println(arquivo.length() / 1024.0 / 1024.0 + " MB");
 
         Response responseLivro = LivroHelper.criarLivroCadastrar(token, livro, arquivo);
         responseLivro
@@ -382,7 +380,7 @@ public class QueroLerLivroTest extends BaseTest {
                 .statusCode(400)
                 .body("[1].mensagem", equalTo("O campo não pode estar vazio"))
                 .body("[1].campo", equalTo("sinopse"))
-                .body("[0].mensagem", equalTo("O campo deve ter no máximo 2147483647 caracteres"))
+                .body("[0].mensagem", equalTo("O campo sinopse deve conter entre 50 e 256 caracteres."))
                 .body("[0].campo", equalTo("sinopse"))
         ;
 
