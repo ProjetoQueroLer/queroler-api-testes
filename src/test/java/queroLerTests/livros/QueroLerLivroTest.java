@@ -8,6 +8,7 @@ import models.LivroModel;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.ValueSource;
 import report.Setup;
 import utils.ConfigProperties;
@@ -19,7 +20,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
-import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.*;
 import static utils.UsuarioHelper.logResposta;
 
 @ExtendWith(Setup.class)
@@ -100,6 +101,27 @@ public class QueroLerLivroTest extends BaseTest {
                 .then()
                 .log().body()
                 .statusCode(201);
+
+        logResposta("POST/livros", responseLivro);
+
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {
+            "6450618461",
+            "1517656690341"
+    })
+    public void cadastrarLivroIsbnJaExistente(String isbn) throws IOException {
+        String token = UsuarioHelper.loginLeitor();
+
+        LivroModel livro = LivroFactory.criarLivroIsbn(isbn);
+
+        Response responseLivro = LivroHelper.criarLivroCadastrar(token, livro);
+        responseLivro
+                .then()
+                .log().body()
+                .statusCode(409)
+                .body(equalTo("ISBN já cadastrado"));
 
         logResposta("POST/livros", responseLivro);
 
@@ -257,10 +279,8 @@ public class QueroLerLivroTest extends BaseTest {
                 .then()
                 .log().body()
                 .statusCode(400)
-                .body("[0].mensagem", equalTo("O campo não pode estar vazio"))
-                .body("[0].campo", equalTo("isbn"))
-                .body("[1].mensagem", equalTo("ISBN deve conter apenas números e ter 10 ou 13 dígitos"))
-                .body("[1].campo", equalTo("isbn"))
+                .body("mensagem", hasItems("O campo não pode estar vazio", "ISBN deve conter apenas números e ter 10 ou 13 dígitos"))
+                .body("campo", hasItems("isbn", "isbn"))
         ;
 
         logResposta("POST/livros", responseLivro);
@@ -339,7 +359,7 @@ public class QueroLerLivroTest extends BaseTest {
                 .then()
                 .log().body()
                 .statusCode(400)
-                .body("[0].mensagem", equalTo("O campo não pode ser numero negativo"))
+                .body("[0].mensagem", equalTo("deve ser maior que 0"))
                 .body("[0].campo", equalTo("numeroDePaginas"))
         ;
 
@@ -376,10 +396,32 @@ public class QueroLerLivroTest extends BaseTest {
                 .then()
                 .log().body()
                 .statusCode(400)
-                .body("[1].mensagem", equalTo("O campo não pode estar vazio"))
-                .body("[1].campo", equalTo("sinopse"))
-                .body("[0].mensagem", equalTo("O campo sinopse deve conter entre 50 e 256 caracteres."))
-                .body("[0].campo", equalTo("sinopse"))
+                .body("mensagem", hasItems("O campo não pode estar vazio", "O campo deve ter no máximo 256 caracteres"))
+                .body("campo", hasItems("sinopse", "sinopse"))
+        ;
+
+        logResposta("POST/livros", responseLivro);
+
+    }
+
+    @ParameterizedTest
+    @ValueSource(ints = {
+            10,
+            25,
+            49
+    })
+    public void cadastrarLivroCampoSinopsePositivoAte49Caracteres(int sinopse) throws IOException {
+        String token = UsuarioHelper.loginLeitor();
+
+        LivroModel livro = LivroFactory.criarLivroSinopseAleotorio(sinopse);
+
+        Response responseLivro = LivroHelper.criarLivroCadastrar(token, livro);
+        responseLivro
+                .then()
+                .log().body()
+                .statusCode(400)
+                .body("mensagem", hasItem("O campo deve ter no máximo 256 caracteres"))
+                .body("campo", hasItem("sinopse"))
         ;
 
         logResposta("POST/livros", responseLivro);
@@ -405,11 +447,13 @@ public class QueroLerLivroTest extends BaseTest {
 
     }
 
-    @Test
-    public void buscarLivroComNumeroIsbn() {
+    @ParameterizedTest
+    @CsvSource({
+            "2791507702",
+            "0350239308626"
+    })
+    public void buscarLivroComNumeroIsbn(String isbn) {
         String token = UsuarioHelper.loginLeitor();
-
-        String isbn = ConfigProperties.get("isbn13");
 
         Response responseLivroIsbn = LivrosClient.buscarLivroIsbn(token, isbn);
         responseLivroIsbn
