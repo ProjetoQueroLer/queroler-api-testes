@@ -124,6 +124,22 @@ public class UsuarioFactory {
         return usuario;
     }
 
+    public static UsuarioModel criarUsuarioEmailVazio() {
+
+        UsuarioModel usuario = new UsuarioModel();
+
+        usuario.setNome(DataFakerUtils.nome());
+        usuario.setEmail("");
+        usuario.setConfirmarEmail("");
+        usuario.setSenha("Teste@123");
+        usuario.setConfirmarSenha("Teste@123");
+        usuario.setCpf(DataFakerUtils.cpf());
+        usuario.setDataDeNascimento(DataFakerUtils.dataNascimento());
+        usuario.setCheckTermo(true);
+
+        return usuario;
+    }
+
     public static UsuarioModel dadosAdicionaisUsuario() {
 
         UsuarioModel usuario = new UsuarioModel();

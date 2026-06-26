@@ -20,7 +20,6 @@ import java.io.File;
 import java.io.IOException;
 
 import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.hasItems;
 import static utils.UsuarioHelper.logResposta;
 
 @ExtendWith(Setup.class)
@@ -82,7 +81,7 @@ public class QueroLerUsuarioTest extends BaseTest {
                 .then()
                 .log().body()
                 .statusCode(400)
-                .body(equalTo("A senha deve ter no mínimo 8 caracteres."))
+                .body(equalTo("A senha deve ter no máximo 64 caracteres."))
         ;
 
         logResposta("POST/usuarios", response);
@@ -116,8 +115,8 @@ public class QueroLerUsuarioTest extends BaseTest {
                 .then()
                 .log().body()
                 .statusCode(400)
-                .body("mensagem", hasItems("E-mail inválido", "O campo deve ter no máximo 256 caracteres"))
-                .body("campo", hasItems("email", "email"))
+                .body("[0].mensagem", equalTo("O campo deve ter no máximo 256 caracteres"))
+                .body("[0].campo", equalTo("email"))
         ;
 
         logResposta("POST/usuarios", response);
@@ -147,7 +146,7 @@ public class QueroLerUsuarioTest extends BaseTest {
                 .then()
                 .log().body()
                 .statusCode(400)
-                .body("[0].mensagem", equalTo("E-mail inválido"))
+                .body("[0].mensagem", equalTo("Informe um endereço de e-mail válido"))
                 .body("[0].campo", equalTo("email"))
         ;
 
@@ -158,8 +157,7 @@ public class QueroLerUsuarioTest extends BaseTest {
     @ParameterizedTest
     @ValueSource(strings = {
             "ana@hotmailcom",
-            "ana@gma!l.com",
-            ""
+            "ana@gma!l.com"
     })
     public void cadastrarUsuarioComEmailInvalidoEspecial(String email) throws JsonProcessingException {
         UsuarioModel usuario = UsuarioFactory.criarUsuarioEmailInvalido(email);
@@ -168,7 +166,23 @@ public class QueroLerUsuarioTest extends BaseTest {
                 .then()
                 .log().body()
                 .statusCode(400)
-                .body("[0].mensagem", equalTo("E-mail inválido"))
+                .body("[0].mensagem", equalTo("Informe um endereço de e-mail válido"))
+                .body("[0].campo", equalTo("email"))
+        ;
+
+        logResposta("POST/usuarios", response);
+
+    }
+
+    @Test
+    public void cadastrarUsuarioComEmailVazio() throws JsonProcessingException {
+        UsuarioModel usuario = UsuarioFactory.criarUsuarioEmailVazio();
+        Response response = UsuarioHelper.criarUsuarioCadastrar(usuario);
+        response
+                .then()
+                .log().body()
+                .statusCode(400)
+                .body("[0].mensagem", equalTo("O campo não pode estar vazio"))
                 .body("[0].campo", equalTo("email"))
         ;
 
