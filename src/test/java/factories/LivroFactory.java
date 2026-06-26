@@ -42,6 +42,23 @@ public class LivroFactory {
         return livro;
     }
 
+    public static LivroModel criarLivroIsbn(String isbn) {
+
+        LivroModel livro = new LivroModel();
+
+        livro.setTitulo(DataFakerUtils.titulo());
+        livro.setIsbn(isbn);
+        livro.setEditora(DataFakerUtils.editora());
+        livro.setAnoDePublicacao(DataFakerUtils.ano());
+        livro.setNumeroDePaginas(DataFakerUtils.numeroDePagina());
+        livro.setIdioma(DataFakerUtils.idioma());
+        livro.setSinopse(DataFakerUtils.sinopse());
+        AutorModel autor = new AutorModel();
+        autor.setNome(DataFakerUtils.nome());
+        livro.setAutores(List.of(autor));
+        return livro;
+    }
+
     public static LivroModel criarLivroIsbnInvalido() {
 
         LivroModel livro = new LivroModel();
@@ -206,6 +223,23 @@ public class LivroFactory {
         livro.setNumeroDePaginas(DataFakerUtils.numeroDePagina());
         livro.setIdioma(DataFakerUtils.idioma());
         livro.setSinopse("");
+        AutorModel autor = new AutorModel();
+        autor.setNome(DataFakerUtils.nome());
+        livro.setAutores(List.of(autor));
+        return livro;
+    }
+
+    public static LivroModel criarLivroSinopseAleotorio(int sinopse) {
+
+        LivroModel livro = new LivroModel();
+
+        livro.setTitulo(DataFakerUtils.titulo());
+        livro.setIsbn(DataFakerUtils.isbn13());
+        livro.setEditora(DataFakerUtils.editora());
+        livro.setAnoDePublicacao(DataFakerUtils.ano());
+        livro.setNumeroDePaginas(DataFakerUtils.numeroDePagina());
+        livro.setIdioma(DataFakerUtils.idioma());
+        livro.setSinopse(DataFakerUtils.caracteres(sinopse));
         AutorModel autor = new AutorModel();
         autor.setNome(DataFakerUtils.nome());
         livro.setAutores(List.of(autor));
