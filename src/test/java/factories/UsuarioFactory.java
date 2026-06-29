@@ -48,7 +48,6 @@ public class UsuarioFactory {
         usuario.setEmail(email);
         usuario.setConfirmarEmail(email);
         String caracteres = DataFakerUtils.caracteres(101);
-        System.out.println(caracteres);
         usuario.setSenha(caracteres);
         usuario.setConfirmarSenha(caracteres);
         usuario.setCpf(DataFakerUtils.cpf());
