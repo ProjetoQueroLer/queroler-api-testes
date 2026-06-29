@@ -8,10 +8,8 @@ import models.LivroModel;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.ValueSource;
 import report.Setup;
-import utils.ConfigProperties;
 import utils.LivroHelper;
 import utils.UsuarioHelper;
 
@@ -106,17 +104,16 @@ public class QueroLerLivroTest extends BaseTest {
 
     }
 
-    @ParameterizedTest
-    @ValueSource(strings = {
-            "6450618461",
-            "1517656690341"
-    })
-    public void cadastrarLivroIsbnJaExistente(String isbn) throws IOException {
+    @Test
+    public void cadastrarLivroIsbnJaExistente() throws IOException {
         String token = UsuarioHelper.loginLeitor();
 
-        LivroModel livro = LivroFactory.criarLivroIsbn(isbn);
+        LivroModel livro1 = LivroFactory.criarLivroIsbn();
+        LivroHelper.criarLivroCadastrar(token, livro1);
+        LivroModel livro2 = LivroFactory.criarLivroIsbn();
+        livro2.setIsbn(livro1.getIsbn());
 
-        Response responseLivro = LivroHelper.criarLivroCadastrar(token, livro);
+        Response responseLivro = LivroHelper.criarLivroCadastrar(token, livro2);
         responseLivro
                 .then()
                 .log().body()
@@ -396,7 +393,7 @@ public class QueroLerLivroTest extends BaseTest {
                 .then()
                 .log().body()
                 .statusCode(400)
-                .body("mensagem", hasItems("O campo não pode estar vazio", "O campo deve ter no máximo 256 caracteres"))
+                .body("mensagem", hasItems("O campo não pode estar vazio", "O campo deve ter no mínimo 50 e no máximo 256 caracteres"))
                 .body("campo", hasItems("sinopse", "sinopse"))
         ;
 
@@ -420,7 +417,7 @@ public class QueroLerLivroTest extends BaseTest {
                 .then()
                 .log().body()
                 .statusCode(400)
-                .body("mensagem", hasItem("O campo deve ter no máximo 256 caracteres"))
+                .body("mensagem", hasItem("O campo deve ter no mínimo 50 e no máximo 256 caracteres"))
                 .body("campo", hasItem("sinopse"))
         ;
 
@@ -439,21 +436,27 @@ public class QueroLerLivroTest extends BaseTest {
                 .then()
                 .log().body()
                 .statusCode(400)
-                .body("[1].mensagem", equalTo("O campo não pode estar vazio"))
-                .body("[1].campo", equalTo("autores"))
+                .body("[0].mensagem", equalTo("O campo não pode estar vazio"))
+                .body("[0].campo", equalTo("autores[0].nome"))
         ;
 
         logResposta("POST/livros", responseLivro);
 
     }
 
-    @ParameterizedTest
-    @CsvSource({
-            "2791507702",
-            "0350239308626"
-    })
-    public void buscarLivroComNumeroIsbn(String isbn) {
+    @Test
+    public void buscarLivroComNumeroIsbn() throws IOException {
         String token = UsuarioHelper.loginLeitor();
+
+        LivroModel livro = LivroFactory.criarLivroIsbn10();
+        File imagem = new File("src/test/resources/imagens/png.png");
+        String isbn = livro.getIsbn();
+
+        Response responseLivro = LivroHelper.criarLivroCadastrar(token, livro, imagem);
+        responseLivro
+                .then()
+                .log().body()
+                .statusCode(201);
 
         Response responseLivroIsbn = LivrosClient.buscarLivroIsbn(token, isbn);
         responseLivroIsbn
