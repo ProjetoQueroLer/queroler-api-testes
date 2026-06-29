@@ -42,12 +42,12 @@ public class LivroFactory {
         return livro;
     }
 
-    public static LivroModel criarLivroIsbn(String isbn) {
+    public static LivroModel criarLivroIsbn() {
 
         LivroModel livro = new LivroModel();
 
         livro.setTitulo(DataFakerUtils.titulo());
-        livro.setIsbn(isbn);
+        livro.setIsbn(DataFakerUtils.isbn13());
         livro.setEditora(DataFakerUtils.editora());
         livro.setAnoDePublicacao(DataFakerUtils.ano());
         livro.setNumeroDePaginas(DataFakerUtils.numeroDePagina());
