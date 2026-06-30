@@ -1,7 +1,6 @@
 package queroLerTests.livros;
 
 import baseTest.BaseTest;
-import clients.LivrosClient;
 import factories.LivroFactory;
 import io.restassured.response.Response;
 import models.LivroModel;
@@ -15,28 +14,13 @@ import utils.UsuarioHelper;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.List;
-import java.util.Map;
 
 import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.hasItem;
 import static utils.UsuarioHelper.logResposta;
 
 @ExtendWith(Setup.class)
-public class QueroLerLivroTest extends BaseTest {
-
-    @Test
-    public void buscarLivros() {
-        String token = UsuarioHelper.loginLeitor();
-
-        Response responseLivro = LivrosClient.buscarLivros(token);
-        responseLivro
-                .then()
-                        .log().body()
-                        .statusCode(200)
-                ;
-
-        logResposta("GET/livros", responseLivro);
-    }
+public class LivroCadastrarTest extends BaseTest {
 
     @Test
     public void cadastrarLivroIsbn13Digitos() throws IOException {
@@ -121,55 +105,6 @@ public class QueroLerLivroTest extends BaseTest {
                 .body(equalTo("ISBN já cadastrado"));
 
         logResposta("POST/livros", responseLivro);
-
-    }
-
-    @Test
-    public void atualizacaoLivroComCapaImagem() throws IOException {
-        String token = UsuarioHelper.loginLeitor();
-
-        LivroModel livro = LivroFactory.criarLivroIsbn10();
-        File imagem = new File("src/test/resources/imagens/jpg.jpg");
-
-        Response responseLivro = LivroHelper.criarLivroCadastrar(token, livro, imagem);
-        responseLivro
-                .then()
-                .log().body()
-                .statusCode(201);
-
-        Response responseBusca = LivrosClient.buscarLivros(token);
-
-        String titulo = livro.getTitulo();
-
-        List<Map<String, Object>> livros =
-                responseBusca.jsonPath().getList("content");
-
-        String urlCapa = null;
-
-        for (Map<String, Object> item : livros) {
-
-            if (titulo.trim().equals(item.get("titulo").toString().trim())) {
-                urlCapa = (String) item.get("urlCapaDoLivro");
-                break;
-            }
-        }
-
-        if (urlCapa == null) {
-            throw new RuntimeException("Livro não encontrado no GET /livros: " + titulo);
-        }
-
-        Integer idLivro = Integer.parseInt(urlCapa.split("/")[2]);
-
-        File novaImagem = new File("src/test/resources/imagens/png.png");
-
-        Response responseAtualizacao = LivroHelper.atualizarCapaLivro(token, idLivro, novaImagem);
-
-        responseAtualizacao
-                .then()
-                .log().body()
-                .statusCode(204);
-
-        logResposta("PUT/livros/" + idLivro + "/capa", responseAtualizacao);
 
     }
 
@@ -436,7 +371,7 @@ public class QueroLerLivroTest extends BaseTest {
                 .then()
                 .log().body()
                 .statusCode(400)
-                .body("[0].mensagem", equalTo("O campo não pode estar vazio"))
+                .body("[0].mensagem", equalTo("O campo deve ter no mínimo 3 e no máximo 80 caracteres"))
                 .body("[0].campo", equalTo("autores[0].nome"))
         ;
 
@@ -444,61 +379,4 @@ public class QueroLerLivroTest extends BaseTest {
 
     }
 
-    @Test
-    public void buscarLivroComNumeroIsbn() throws IOException {
-        String token = UsuarioHelper.loginLeitor();
-
-        LivroModel livro = LivroFactory.criarLivroIsbn10();
-        File imagem = new File("src/test/resources/imagens/png.png");
-        String isbn = livro.getIsbn();
-
-        Response responseLivro = LivroHelper.criarLivroCadastrar(token, livro, imagem);
-        responseLivro
-                .then()
-                .log().body()
-                .statusCode(201);
-
-        Response responseLivroIsbn = LivrosClient.buscarLivroIsbn(token, isbn);
-        responseLivroIsbn
-                .then()
-                .log().body()
-                .statusCode(200)
-                ;
-
-        logResposta("GET/livros", responseLivroIsbn);
-    }
-
-    @Test
-    public void buscarLivroIsbnInexistente() {
-        String token = UsuarioHelper.loginLeitor();
-
-        String isbn = "9999999999";
-
-        Response responseLivroIsbn = LivrosClient.buscarLivroIsbn(token, isbn);
-        responseLivroIsbn
-                .then()
-                .log().body()
-                .statusCode(404)
-                .body(equalTo("Não há nenhum livro cadastrado com o código ISBN informado"))
-        ;
-
-        logResposta("GET/livros", responseLivroIsbn);
-    }
-
-    @Test
-    public void buscarLivroIdCapaInexistente() {
-        String token = UsuarioHelper.loginLeitor();
-
-        String idCapa = "-1";
-
-        Response responseLivroIsbn = LivrosClient.buscarLivroIdCapa(token, idCapa);
-        responseLivroIsbn
-                .then()
-                .log().body()
-                .statusCode(404)
-                .body(equalTo("Livro não encontrado"))
-        ;
-
-        logResposta("GET/livros", responseLivroIsbn);
-    }
 }
