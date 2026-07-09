@@ -100,4 +100,12 @@ public class LivrosClient {
                 .get(EndPoints.LIVROS);
     }
 
+    public static Response pesquisarLivro(String token, String livro) {
+        return given()
+                .cookie("jwt", token)
+                .queryParam("isbn", livro)
+                .when()
+                .get(EndPoints.LIVROS);
+    }
+
 }
