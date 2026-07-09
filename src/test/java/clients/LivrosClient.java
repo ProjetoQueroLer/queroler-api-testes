@@ -76,4 +76,36 @@ public class LivrosClient {
                 .get(EndPoints.LIVROS_ID_CAPA);
     }
 
+    public static Response pesquisarLivroTitulo(String token, String titulo) {
+        return given()
+                .cookie("jwt", token)
+                .queryParam("titulo", titulo)
+                .when()
+                .get(EndPoints.LIVROS);
+    }
+
+    public static Response pesquisarLivroAutor(String token, String autor) {
+        return given()
+                .cookie("jwt", token)
+                .queryParam("autor", autor)
+                .when()
+                .get(EndPoints.LIVROS);
+    }
+
+    public static Response pesquisarLivroEditora(String token, String editora) {
+        return given()
+                .cookie("jwt", token)
+                .queryParam("editora", editora)
+                .when()
+                .get(EndPoints.LIVROS);
+    }
+
+    public static Response pesquisarLivro(String token, String livro) {
+        return given()
+                .cookie("jwt", token)
+                .queryParam("isbn", livro)
+                .when()
+                .get(EndPoints.LIVROS);
+    }
+
 }

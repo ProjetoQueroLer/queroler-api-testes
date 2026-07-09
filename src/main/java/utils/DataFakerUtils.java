@@ -16,6 +16,10 @@ public class DataFakerUtils {
         return faker.regexify("[a-zA-Z]{81}");
     }
 
+    public static String caracteresAleatorios(String numero) {
+        return faker.regexify("[a-zA-Z]{"+numero+"}");
+    }
+
     public static String email() {
         return faker.internet().emailAddress();
     }
