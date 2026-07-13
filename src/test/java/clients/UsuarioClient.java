@@ -1,5 +1,6 @@
 package clients;
 
+import baseTest.BaseTest;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.restassured.http.ContentType;
@@ -22,7 +23,7 @@ public class UsuarioClient {
         ObjectMapper mapper = new ObjectMapper();
 
         String dadosJson = mapper.writeValueAsString(usuario);
-        return given()
+        return given(BaseTest.requestSpecification)
                 .contentType(ContentType.MULTIPART)
                 .multiPart("dados", dadosJson)
             .when()
@@ -33,7 +34,7 @@ public class UsuarioClient {
         ObjectMapper objectMapper = new ObjectMapper();
         String contentType = Files.probeContentType(imagem.toPath());
 
-        RequestSpecification request = given()
+        RequestSpecification request = given(BaseTest.requestSpecification)
                 .contentType(ContentType.MULTIPART)
                 .multiPart("dados", objectMapper.writeValueAsString(usuario), "application/json");
         if (imagem != null) {
@@ -45,14 +46,14 @@ public class UsuarioClient {
     }
 
     public static Response buscarUsuario(String token) {
-        return given()
+        return given(BaseTest.requestSpecification)
                 .cookie("jwt", token)
             .when()
                 .get(EndPoints.USUARIOS);
     }
 
     public static Response buscarUsuarioFoto(String token) {
-        return given()
+        return given(BaseTest.requestSpecification)
                 .cookie("jwt", token)
             .when()
                 .get(EndPoints.USUARIOS_FOTO);
@@ -60,7 +61,7 @@ public class UsuarioClient {
 
     public static Response atualizarUsuario(String token, UsuarioModel usuario) throws JsonProcessingException {
         ObjectMapper objectMapper = new ObjectMapper();
-        return given()
+        return given(BaseTest.requestSpecification)
                 .cookie("jwt", token)
                 .contentType(ContentType.MULTIPART)
                 .multiPart("dados", objectMapper.writeValueAsString(usuario),"application/json")
@@ -72,7 +73,7 @@ public class UsuarioClient {
         ObjectMapper objectMapper = new ObjectMapper();
         String contentType = Files.probeContentType(imagem.toPath());
 
-        RequestSpecification request = given()
+        RequestSpecification request = given(BaseTest.requestSpecification)
                 .cookie("jwt", token)
                 .contentType(ContentType.MULTIPART)
                 .multiPart("dados", objectMapper.writeValueAsString(usuario),"application/json");
@@ -89,7 +90,7 @@ public class UsuarioClient {
         payload.put("senhaAtual", senhaAtual);
         payload.put("senhaNova", senhaNova);
 
-        return given()
+        return given(BaseTest.requestSpecification)
                 .cookie("jwt", token)
                 .contentType(ContentType.JSON)
                 .body(payload)
@@ -98,7 +99,7 @@ public class UsuarioClient {
     }
 
     public static Response deleteUsuarioId(String token) {
-        return given()
+        return given(BaseTest.requestSpecification)
                 .cookie("jwt", token)
             .when()
                 .delete(EndPoints.USUARIOS);
