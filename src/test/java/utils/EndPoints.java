@@ -2,7 +2,14 @@ package utils;
 
 public class EndPoints {
 
-    public static final String BASE_URI = "http://localhost:8080/";
+    public static final String BASE_URI_LOCAL = "http://localhost:8080/";
+    public static final String BASE_URI_AMBIENTE = "http://queroler-tst.duckdns.org:8080/";
+
+    public static final String BASE_URI =
+            "netlify".equalsIgnoreCase(System.getProperty("ambiente"))
+                    ? BASE_URI_AMBIENTE
+                    : BASE_URI_LOCAL;
+
     public static final String USUARIOS = "usuarios";
     public static final String USUARIOS_FOTO = "usuarios/foto";
     public static final String USUARIOS_DADOS_ADICIONAIS = "usuarios/dados-adicionais";
