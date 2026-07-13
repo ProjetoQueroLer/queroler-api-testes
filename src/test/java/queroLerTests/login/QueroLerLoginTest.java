@@ -16,6 +16,20 @@ import static utils.UsuarioHelper.logResposta;
 public class QueroLerLoginTest extends BaseTest {
 
     @Test
+    public void acessarLoginUsuarioLeitorExistenteComSucesso() throws JsonProcessingException {
+        Response response = LoginClient.acessarLogin(LoginFactory.usuarioLeitorExistenteComSucesso());
+
+        response
+                .then()
+                .log().body()
+                .statusCode(200)
+        ;
+
+        logResposta("POST/logins", response);
+    }
+
+
+    @Test
     public void acessarLoginUsuarioLeitorComSucesso() throws JsonProcessingException {
         Response response = LoginClient.acessarLogin(LoginFactory.usuarioLeitorSucesso());
 

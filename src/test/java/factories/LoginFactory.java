@@ -9,6 +9,13 @@ import utils.ConfigProperties;
 
 public class LoginFactory {
 
+    public static LoginModel usuarioLeitorExistenteComSucesso() throws JsonProcessingException {
+        LoginModel usuarioLogin = new LoginModel();
+        usuarioLogin.setUser(ConfigProperties.get("existenteUsuario.email"));
+        usuarioLogin.setSenha(ConfigProperties.get("existenteUsuario.password"));
+        return usuarioLogin;
+    }
+
     public static LoginModel usuarioLeitorSucesso() throws JsonProcessingException {
         UsuarioModel usuario = UsuarioFactory.criarUsuario();
         UsuarioClient.criarUsuario(usuario);
