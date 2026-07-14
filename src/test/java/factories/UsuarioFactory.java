@@ -38,6 +38,23 @@ public class UsuarioFactory {
         return usuario;
     }
 
+    public static UsuarioModel criarUsuarioSenhaDiferenteConfirmarSenha() {
+
+        UsuarioModel usuario = new UsuarioModel();
+
+        usuario.setNome(DataFakerUtils.nome());
+        String email = DataFakerUtils.email();
+        usuario.setEmail(email);
+        usuario.setConfirmarEmail(email);
+        usuario.setSenha(DataFakerUtils.senhaAleatoria());
+        usuario.setConfirmarSenha(DataFakerUtils.senhaAleatoria());
+        usuario.setCpf(DataFakerUtils.cpf());
+        usuario.setDataDeNascimento(DataFakerUtils.dataNascimento());
+        usuario.setCheckTermo(true);
+
+        return usuario;
+    }
+
     public static UsuarioModel criarUsuarioMenos8caracteres() {
 
         UsuarioModel usuario = new UsuarioModel();
