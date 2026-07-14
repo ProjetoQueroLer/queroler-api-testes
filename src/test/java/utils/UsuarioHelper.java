@@ -33,9 +33,9 @@ public class UsuarioHelper {
             Response response = UsuarioClient.criarUsuario(usuario);
 
             if (response.statusCode() == 201) {
-                System.out.println("Usuário criado.");
+
             } else if (response.statusCode() == 409) {
-                System.out.println("Usuário já existe.");
+
             } else {
                 throw new RuntimeException("Erro ao criar usuário: " + response.asPrettyString());
             }
