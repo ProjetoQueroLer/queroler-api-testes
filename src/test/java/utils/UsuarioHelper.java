@@ -3,6 +3,7 @@ package utils;
 import clients.LoginClient;
 import clients.UsuarioClient;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import factories.UsuarioFactory;
 import io.restassured.response.Response;
 import models.LoginModel;
 import models.UsuarioModel;
@@ -23,6 +24,24 @@ public class UsuarioHelper {
             ExtentReportManager.logInfoDetails("Body: " + response.getBody().asString());
         }
         ExtentReportManager.logHeaders(response.getHeaders());
+    }
+
+    public static void garantirUsuarioExiste() {
+        UsuarioModel usuario = UsuarioFactory.criarUsuarioExistenteAntesTeste();
+
+        try {
+            Response response = UsuarioClient.criarUsuario(usuario);
+
+            if (response.statusCode() == 201) {
+                System.out.println("Usuário criado.");
+            } else if (response.statusCode() == 409) {
+                System.out.println("Usuário já existe.");
+            } else {
+                throw new RuntimeException("Erro ao criar usuário: " + response.asPrettyString());
+            }
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public static Response criarUsuarioCadastrar(UsuarioModel usuario) throws JsonProcessingException {
@@ -50,9 +69,8 @@ public class UsuarioHelper {
 
     public static String loginLeitor() {
         LoginModel usuarioLogin = new LoginModel();
-        usuarioLogin.setUser(ConfigProperties.get("leitor.email"));
-        usuarioLogin.setSenha(ConfigProperties.get("leitor.password"));
-
+        usuarioLogin.setUser(ConfigProperties.get("existenteUsuario.email"));
+        usuarioLogin.setSenha(ConfigProperties.get("existenteUsuario.password"));
         return LoginClient.acessarLogin(usuarioLogin)
                 .then()
                 .statusCode(200)
