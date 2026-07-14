@@ -5,6 +5,22 @@ import utils.DataFakerUtils;
 
 public class UsuarioFactory {
 
+    public static UsuarioModel criarUsuarioExistenteAntesTeste() {
+
+        UsuarioModel usuario = new UsuarioModel();
+
+        usuario.setNome("Teste");
+        usuario.setEmail("testes@testes.com");
+        usuario.setConfirmarEmail("testes@testes.com");
+        usuario.setSenha("Teste@123");
+        usuario.setConfirmarSenha("Teste@123");
+        usuario.setCpf("472.590.180-62");
+        usuario.setDataDeNascimento("03/11/1992");
+        usuario.setCheckTermo(true);
+
+        return usuario;
+    }
+
     public static UsuarioModel criarUsuario() {
 
         UsuarioModel usuario = new UsuarioModel();
