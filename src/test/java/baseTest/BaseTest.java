@@ -7,6 +7,7 @@ import io.restassured.specification.RequestSpecification;
 import io.restassured.specification.ResponseSpecification;
 import org.junit.jupiter.api.BeforeEach;
 import utils.EndPoints;
+import utils.UsuarioHelper;
 
 public class BaseTest extends EndPoints {
 
@@ -24,5 +25,6 @@ public class BaseTest extends EndPoints {
                 .expectContentType(ContentType.JSON)
                 .build();
 
+        UsuarioHelper.garantirUsuarioExiste();
     }
 }
