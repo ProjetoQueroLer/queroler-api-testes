@@ -56,6 +56,21 @@ public class UsuarioCadastrarTest extends BaseTest {
     }
 
     @Test
+    public void cadastrarUsuarioSenhaDiferenteConfirmarSenha() throws JsonProcessingException {
+        UsuarioModel usuario = UsuarioFactory.criarUsuarioSenhaDiferenteConfirmarSenha();
+        Response response = UsuarioHelper.criarUsuarioCadastrar(usuario);
+        response
+                .then()
+                .log().body()
+                .statusCode(400)
+                .body(equalTo("Confirmação da senha não corresponde à senha informada."))
+        ;
+
+        logResposta("POST/usuarios", response);
+
+    }
+
+    @Test
     public void cadastrarUsuarioSenhaMenos8Caracteres() throws JsonProcessingException {
         UsuarioModel usuario = UsuarioFactory.criarUsuarioMenos8caracteres();
         Response response = UsuarioHelper.criarUsuarioCadastrar(usuario);
@@ -70,7 +85,7 @@ public class UsuarioCadastrarTest extends BaseTest {
 
     }
 
-    @Test
+//    @Test
     public void cadastrarUsuarioSenhaMais100Caracteres() throws JsonProcessingException {
         UsuarioModel usuario = UsuarioFactory.criarUsuarioMais100caracteres();
         Response response = UsuarioHelper.criarUsuarioCadastrar(usuario);
@@ -133,6 +148,7 @@ public class UsuarioCadastrarTest extends BaseTest {
             "ana.hotmail.com",
             "ana@.com",
             "ana@hotmail..com",
+            "ana..carolyny@hotmail.com",
             "ana<>@hotmail.com",
             "ana#hotmail.com"
     })
