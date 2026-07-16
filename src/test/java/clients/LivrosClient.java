@@ -108,4 +108,11 @@ public class LivrosClient {
                 .get(EndPoints.LIVROS);
     }
 
+    public static Response pesquisarLivroOrdenadoPorDataCadastroDesc(String token) {
+        return given()
+                .cookie("jwt", token)
+                .queryParam("sort", "dataDeCadastro,desc")
+                .when()
+                .get(EndPoints.LIVROS);
+    }
 }
