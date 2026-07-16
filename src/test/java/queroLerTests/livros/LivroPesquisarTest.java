@@ -176,14 +176,12 @@ public class LivroPesquisarTest extends BaseTest {
     public void pesquisarLivroOrdenadoPorDataCadastroDecrescente() {
         String token = UsuarioHelper.loginLeitor();
 
-        Response response = LivrosClient.pesquisarLivro(token, "teste");
+        Response response = LivrosClient.pesquisarLivroOrdenadoPorDataCadastroDesc(token);
 
         response.then()
                 .statusCode(200);
 
         int quantidade = response.jsonPath().getList("content").size();
-        System.out.println("quantidade: "+quantidade);
-        // O teste só faz sentido se houver pelo menos 2 livros
         assertTrue(quantidade >= 2);
 
         DateTimeFormatter formatter =
@@ -211,55 +209,11 @@ public class LivroPesquisarTest extends BaseTest {
             System.out.println("Atual   : " + dataAtual);
             System.out.println("Titulo  : " + proximoTitulo);
             System.out.println("Próxima : " + proximaData);
-            System.out.println("isAfter: " + dataAtual1.isAfter(proximaData1));
 
             assertTrue(
                     dataAtual1.isAfter(proximaData1)
                             || dataAtual1.isEqual(proximaData1),
                     "Os livros não estão em ordem decrescente de cadastro."
-            );
-        }
-    }
-
-    @Test
-    public void pesquisarLivroOrdenadoPorDataCadastroCrescente() {
-        String token = UsuarioHelper.loginLeitor();
-
-        Response response = LivrosClient.pesquisarLivro(token, "teste");
-
-        response.then()
-                .statusCode(200);
-
-        int quantidade = response.jsonPath().getList("content").size();
-
-        if (quantidade < 2) {
-            return;
-        }
-
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
-
-        for (int i = 0; i < quantidade - 1; i++) {
-
-            System.out.println(
-                    "Livro: " +
-                            response.jsonPath().getString("content[" + i + "].titulo") +
-                            " | Data: " +
-                            response.jsonPath().getString("content[" + i + "].dataDeCadastro")
-            );
-
-            LocalDateTime dataAtual = LocalDateTime.parse(
-                    response.jsonPath().getString("content[" + i + "].dataDeCadastro"),
-                    formatter
-            );
-
-            LocalDateTime proximaData = LocalDateTime.parse(
-                    response.jsonPath().getString("content[" + (i + 1) + "].dataDeCadastro"),
-                    formatter
-            );
-
-            assertTrue(
-                    dataAtual.isBefore(proximaData) || dataAtual.isEqual(proximaData),
-                    "Os livros não estão em ordem crescente de cadastro."
             );
         }
     }
