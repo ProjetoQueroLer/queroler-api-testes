@@ -371,8 +371,8 @@ public class LivroCadastrarTest extends BaseTest {
                 .then()
                 .log().body()
                 .statusCode(400)
-                .body("[0].mensagem", equalTo("O campo deve ter no mínimo 3 e no máximo 80 caracteres"))
-                .body("[0].campo", equalTo("autores[0].nome"))
+                .body("mensagem", hasItems("O campo não pode estar vazio", "O campo deve ter no mínimo 3 e no máximo 80 caracteres"))
+                .body("campo", hasItems("autores[0].nome", "autores[0].nome"))
         ;
 
         logResposta("POST/livros", responseLivro);
