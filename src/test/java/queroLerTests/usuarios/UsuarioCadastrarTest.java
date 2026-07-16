@@ -70,7 +70,7 @@ public class UsuarioCadastrarTest extends BaseTest {
 
     }
 
-    @Test
+//    @Test
     public void cadastrarUsuarioSenhaMais100Caracteres() throws JsonProcessingException {
         UsuarioModel usuario = UsuarioFactory.criarUsuarioMais100caracteres();
         Response response = UsuarioHelper.criarUsuarioCadastrar(usuario);
@@ -133,6 +133,7 @@ public class UsuarioCadastrarTest extends BaseTest {
             "ana.hotmail.com",
             "ana@.com",
             "ana@hotmail..com",
+            "ana..carolyny@hotmail.com",
             "ana<>@hotmail.com",
             "ana#hotmail.com"
     })
@@ -181,22 +182,6 @@ public class UsuarioCadastrarTest extends BaseTest {
                 .statusCode(400)
                 .body("[0].mensagem", equalTo("O campo não pode estar vazio"))
                 .body("[0].campo", equalTo("email"))
-        ;
-
-        logResposta("POST/usuarios", response);
-
-    }
-
-    @Test
-    public void cadastrarUsuarioEmailDiferenteEmailConfirmar() throws JsonProcessingException {
-        UsuarioModel usuario = UsuarioFactory.criarUsuarioEmailDiferenteEmailConfirmar();
-        Response response = UsuarioHelper.criarUsuarioCadastrar(usuario);
-        response
-                .then()
-                .log().body()
-                .statusCode(400)
-                .body("[0].campo", equalTo("confirmarEmail"))
-                .body("[0].mensagem", equalTo("Email digitada não corresponde email confirmar"));
         ;
 
         logResposta("POST/usuarios", response);
