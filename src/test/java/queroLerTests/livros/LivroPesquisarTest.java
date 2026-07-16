@@ -2,14 +2,18 @@ package queroLerTests.livros;
 
 import baseTest.BaseTest;
 import clients.LivrosClient;
+import factories.LivroFactory;
 import io.restassured.response.Response;
+import models.LivroModel;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import report.Setup;
 import utils.ConfigProperties;
 import utils.DataFakerUtils;
+import utils.LivroHelper;
 import utils.UsuarioHelper;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
@@ -37,16 +41,18 @@ public class LivroPesquisarTest extends BaseTest {
     }
 
     @Test
-    public void pesquisarLivroTitulo() {
+    public void pesquisarLivroTitulo() throws IOException {
         String token = UsuarioHelper.loginLeitor();
-        String titulo = ConfigProperties.get("titulo");
+
+        LivroModel livro = LivroFactory.criarLivroIsbn13();
+        LivroHelper.criarLivroCadastrar(token, livro);
+        String titulo = livro.getTitulo();
 
         Response responseLivroTitulo = LivrosClient.pesquisarLivroTitulo(token, titulo);
         responseLivroTitulo
                 .then()
                 .log().body()
                 .statusCode(200)
-//                .body(equalTo("Não há nenhum livro cadastrado com o código ISBN informado"))
         ;
 
         assertEquals(1, responseLivroTitulo.jsonPath().getList("content").size());
@@ -72,17 +78,22 @@ public class LivroPesquisarTest extends BaseTest {
     }
 
     @Test
-    public void pesquisarLivroAutor() {
+    public void pesquisarLivroAutor() throws IOException {
         String token = UsuarioHelper.loginLeitor();
-        String autores = ConfigProperties.get("autores");
+
+        LivroModel livro = LivroFactory.criarLivroIsbn13();
+        LivroHelper.criarLivroCadastrar(token, livro);
+        String autores = livro.getAutores().get(0).getNome();
 
         Response responseLivroAutor = LivrosClient.pesquisarLivroAutor(token, autores);
         responseLivroAutor
                 .then()
                 .log().body()
                 .statusCode(200)
-//                .body(equalTo("Não há nenhum livro cadastrado com o código ISBN informado"))
         ;
+
+        assertEquals(1, responseLivroAutor.jsonPath().getList("content").size());
+        assertEquals(1, responseLivroAutor.jsonPath().getInt("totalElements"));
 
         logResposta("GET/livros", responseLivroAutor);
     }
@@ -104,17 +115,22 @@ public class LivroPesquisarTest extends BaseTest {
     }
 
     @Test
-    public void pesquisarLivroEditora() {
+    public void pesquisarLivroEditora() throws IOException {
         String token = UsuarioHelper.loginLeitor();
-        String editora = ConfigProperties.get("editora");
-        System.out.println(editora);
+
+        LivroModel livro = LivroFactory.criarLivroIsbn13();
+        LivroHelper.criarLivroCadastrar(token, livro);
+        String editora = livro.getEditora();
+
         Response responseLivroEditora = LivrosClient.pesquisarLivroEditora(token, editora);
         responseLivroEditora
                 .then()
                 .log().body()
                 .statusCode(200)
-//                .body(equalTo("Não há nenhum livro cadastrado com o código ISBN informado"))
         ;
+
+        assertEquals(1, responseLivroEditora.jsonPath().getList("content").size());
+        assertEquals(1, responseLivroEditora.jsonPath().getInt("totalElements"));
 
         logResposta("GET/livros", responseLivroEditora);
     }
