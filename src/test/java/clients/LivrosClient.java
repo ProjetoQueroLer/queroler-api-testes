@@ -1,5 +1,6 @@
 package clients;
 
+import baseTest.BaseTest;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.restassured.http.ContentType;
 import io.restassured.response.Response;
@@ -17,7 +18,7 @@ public class LivrosClient {
     public static Response criarLivro(String token, Object livro) throws IOException {
         ObjectMapper mapper = new ObjectMapper();
 
-        RequestSpecification request = given()
+        RequestSpecification request = given(BaseTest.requestSpecification)
                 .cookie("jwt", token)
                 .contentType(ContentType.MULTIPART)
                 .multiPart("dados", mapper.writeValueAsString(livro), "application/json");
@@ -30,7 +31,7 @@ public class LivrosClient {
         ObjectMapper objectMapper = new ObjectMapper();
         String contentType = Files.probeContentType(imagem.toPath());
 
-        RequestSpecification request = given()
+        RequestSpecification request = given(BaseTest.requestSpecification)
                 .cookie("jwt", token)
                 .contentType(ContentType.MULTIPART)
                 .multiPart("dados", objectMapper.writeValueAsString(livro), "application/json");
@@ -44,7 +45,7 @@ public class LivrosClient {
 
     public static Response atualizarCapaLivro(String token, Integer idLivro, File imagem) {
 
-        return given()
+        return given(BaseTest.requestSpecification)
                 .cookie("jwt", token)
                 .contentType(ContentType.MULTIPART)
                 .multiPart("imagem", imagem, "image/jpeg")
@@ -54,14 +55,16 @@ public class LivrosClient {
     }
 
     public static Response buscarLivros(String token) {
-        return given()
+        return given(BaseTest.requestSpecification)
                 .cookie("jwt", token)
+                .queryParam("page", 0)
+                .queryParam("size", 100)
             .when()
                 .get(EndPoints.LIVROS);
     }
 
     public static Response buscarLivroIsbn(String token, String isbn) {
-        return given()
+        return given(BaseTest.requestSpecification)
                 .cookie("jwt", token)
                 .pathParam("isbn", isbn)
                 .when()
@@ -69,7 +72,7 @@ public class LivrosClient {
     }
 
     public static Response buscarLivroIdCapa(String token, String id) {
-        return given()
+        return given(BaseTest.requestSpecification)
                 .cookie("jwt", token)
                 .pathParam("id", id)
                 .when()
@@ -77,7 +80,7 @@ public class LivrosClient {
     }
 
     public static Response pesquisarLivroTitulo(String token, String titulo) {
-        return given()
+        return given(BaseTest.requestSpecification)
                 .cookie("jwt", token)
                 .queryParam("titulo", titulo)
                 .when()
@@ -85,7 +88,7 @@ public class LivrosClient {
     }
 
     public static Response pesquisarLivroAutor(String token, String autor) {
-        return given()
+        return given(BaseTest.requestSpecification)
                 .cookie("jwt", token)
                 .queryParam("autor", autor)
                 .when()
@@ -93,7 +96,7 @@ public class LivrosClient {
     }
 
     public static Response pesquisarLivroEditora(String token, String editora) {
-        return given()
+        return given(BaseTest.requestSpecification)
                 .cookie("jwt", token)
                 .queryParam("editora", editora)
                 .when()
@@ -101,7 +104,7 @@ public class LivrosClient {
     }
 
     public static Response pesquisarLivro(String token, String livro) {
-        return given()
+        return given(BaseTest.requestSpecification)
                 .cookie("jwt", token)
                 .queryParam("isbn", livro)
                 .when()
@@ -109,7 +112,7 @@ public class LivrosClient {
     }
 
     public static Response pesquisarLivroOrdenadoPorDataCadastroDesc(String token) {
-        return given()
+        return given(BaseTest.requestSpecification)
                 .cookie("jwt", token)
                 .queryParam("sort", "dataDeCadastro,desc")
                 .when()
