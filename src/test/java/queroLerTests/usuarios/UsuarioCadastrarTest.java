@@ -132,8 +132,6 @@ public class UsuarioCadastrarTest extends BaseTest {
             "ana@teste@hotmail.com",
             "ana.hotmail.com",
             "ana@.com",
-            "ana@hotmail..com",
-            "ana..carolyny@hotmail.com",
             "ana<>@hotmail.com",
             "ana#hotmail.com"
     })
@@ -146,6 +144,25 @@ public class UsuarioCadastrarTest extends BaseTest {
                 .statusCode(400)
                 .body("[0].mensagem", equalTo("Informe um endereço de e-mail válido"))
                 .body("[0].campo", equalTo("email"))
+        ;
+
+        logResposta("POST/usuarios", response);
+
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {
+            "ana@hotmail..com",
+            "ana..carolyny@hotmail.com"
+    })
+    public void cadastrarUsuarioComEmailInvalidoComPontos(String email) throws JsonProcessingException {
+        UsuarioModel usuario = UsuarioFactory.criarUsuarioEmailInvalido(email);
+        Response response = UsuarioHelper.criarUsuarioCadastrar(usuario);
+        response
+                .then()
+                .log().body()
+                .statusCode(400)
+                .body(equalTo("Email inválido."))
         ;
 
         logResposta("POST/usuarios", response);
