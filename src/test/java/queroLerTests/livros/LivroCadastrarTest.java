@@ -291,7 +291,7 @@ public class LivroCadastrarTest extends BaseTest {
                 .then()
                 .log().body()
                 .statusCode(400)
-                .body("[0].mensagem", equalTo("deve ser maior que 0"))
+                .body("[0].mensagem", equalTo("O valor deve ser positivo"))
                 .body("[0].campo", equalTo("numeroDePaginas"))
         ;
 
