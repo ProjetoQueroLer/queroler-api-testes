@@ -18,5 +18,8 @@ public class EndPoints {
     public static final String LIVROS = "livros";
     public static final String LIVROS_ISBN = "livros/buscar/{isbn}";
     public static final String LIVROS_ID_CAPA = "livros/{id}/capa";
+    public static final String LEITURAS = "leituras";
+    public static final String LEITURAS_LIVROID = "leituras/{livroId}";
+
 
 }
