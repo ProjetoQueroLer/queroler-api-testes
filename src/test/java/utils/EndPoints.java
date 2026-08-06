@@ -14,6 +14,7 @@ public class EndPoints {
     public static final String USUARIOS_FOTO = "usuarios/foto";
     public static final String USUARIOS_DADOS_ADICIONAIS = "usuarios/dados-adicionais";
     public static final String USUARIOS_ALTERAR_SENHA = "usuarios/alterar-senha";
+    public static final String USUARIOS_ID_COMENTARIOS = "usuarios/{id}/comentarios";
     public static final String LOGINS = "logins";
     public static final String LIVROS = "livros";
     public static final String LIVROS_ISBN = "livros/buscar/{isbn}";
