@@ -3,42 +3,41 @@ package clients;
 import baseTest.BaseTest;
 import io.restassured.http.ContentType;
 import io.restassured.response.Response;
-import models.LeituraComentarioModel;
-import models.LeituraStatusModel;
 import utils.EndPoints;
+
 
 import static io.restassured.RestAssured.given;
 
-public class LeituraClient {
+public class DiarioClient {
 
-    public static Response criarLeituraStatus(String token, LeituraStatusModel body) {
+    public static Response criarDiario(String token, Object body) {
 
         return given(BaseTest.requestSpecification)
                 .cookie("jwt", token)
                 .contentType(ContentType.JSON)
                 .body(body)
                 .when()
-                .post(EndPoints.LEITURAS);
+                .post(EndPoints.DIARIO);
     }
 
-    public static Response deletarLeitura(String token, int id) {
+    public static Response buscarDiarioLivroId(String token, int id) {
 
         return given(BaseTest.requestSpecification)
                 .cookie("jwt", token)
                 .contentType(ContentType.JSON)
-                .pathParam("livroId", id)
+                .queryParam("livroId", id)
                 .when()
-                .delete(EndPoints.LEITURAS_LIVROID);
+                .get(EndPoints.DIARIO);
     }
 
-    public static Response criarLeituraComentario(String token, int id, LeituraComentarioModel body) {
+    public static Response buscarDiarioPorLivro(String token, int id) {
 
         return given(BaseTest.requestSpecification)
                 .cookie("jwt", token)
                 .contentType(ContentType.JSON)
-                .pathParam("diarioId", id)
-                .body(body)
+                .queryParam("livroId", id)
                 .when()
-                .post(EndPoints.LEITURAS_DIARIOID_COMENTARIO);
+                .get(EndPoints.DIARIO);
     }
+
 }

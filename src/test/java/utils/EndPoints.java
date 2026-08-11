@@ -20,6 +20,8 @@ public class EndPoints {
     public static final String LIVROS_ID_CAPA = "livros/{id}/capa";
     public static final String LEITURAS = "leituras";
     public static final String LEITURAS_LIVROID = "leituras/{livroId}";
+    public static final String LEITURAS_DIARIOID_COMENTARIO = "leituras/{diarioId}/comentarios";
+    public static final String DIARIO = "diario";
 
 
 }

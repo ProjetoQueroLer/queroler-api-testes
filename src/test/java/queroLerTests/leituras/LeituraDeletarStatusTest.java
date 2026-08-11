@@ -2,10 +2,10 @@ package queroLerTests.leituras;
 
 import baseTest.BaseTest;
 import clients.LeituraClient;
-import factories.LeituraFactory;
+import factories.LeituraStatusFactory;
 import factories.LivroFactory;
 import io.restassured.response.Response;
-import models.LeituraModel;
+import models.LeituraStatusModel;
 import models.LivroModel;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -51,8 +51,8 @@ public class LeituraDeletarStatusTest extends BaseTest {
                 .log().body()
                 .statusCode(201);
 
-        LeituraModel leituraModel = LeituraFactory.criarLeituraLivroStatusLivroLido(responseLivro.jsonPath().getInt("id"));
-        Response responseLeitura = LeituraClient.criarLeitura(token, leituraModel);
+        LeituraStatusModel leituraStatusModel = LeituraStatusFactory.criarLeituraLivroStatusLivroLido(responseLivro.jsonPath().getInt("id"));
+        Response responseLeitura = LeituraClient.criarLeituraStatus(token, leituraStatusModel);
         responseLeitura
                 .then()
                 .log().body()

@@ -2,15 +2,14 @@ package queroLerTests.leituras;
 
 import baseTest.BaseTest;
 import clients.LeituraClient;
-import factories.LeituraFactory;
+import factories.LeituraStatusFactory;
 import factories.LivroFactory;
 import io.restassured.response.Response;
-import models.LeituraModel;
+import models.LeituraStatusModel;
 import models.LivroModel;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import report.Setup;
-import utils.LeituraHelper;
 import utils.LivroHelper;
 import utils.UsuarioHelper;
 
@@ -24,9 +23,9 @@ public class LeituraCriarStatusTest extends BaseTest {
     @Test
     public void livroInexistenteStatus() {
         String token = UsuarioHelper.loginLeitor();
-        LeituraModel leituraModel = LeituraFactory.criarLeituraLivroInexistente();
+        LeituraStatusModel leituraStatusModel = LeituraStatusFactory.criarLeituraLivroInexistente();
 
-        Response responseLeitura = LeituraClient.criarLeitura(token, leituraModel);
+        Response responseLeitura = LeituraClient.criarLeituraStatus(token, leituraStatusModel);
 
         responseLeitura
                 .then()
@@ -47,9 +46,9 @@ public class LeituraCriarStatusTest extends BaseTest {
                 .log().body()
                 .statusCode(201);
 
-        LeituraModel leituraModel = LeituraFactory.criarLeituraLivroStatusQueroLer(responseLivro.jsonPath().getInt("id"));
+        LeituraStatusModel leituraStatusModel = LeituraStatusFactory.criarLeituraLivroStatusQueroLer(responseLivro.jsonPath().getInt("id"));
 
-        Response responseLeitura = LeituraClient.criarLeitura(token, leituraModel);
+        Response responseLeitura = LeituraClient.criarLeituraStatus(token, leituraStatusModel);
 
         responseLeitura
                 .then()
@@ -69,9 +68,9 @@ public class LeituraCriarStatusTest extends BaseTest {
                 .log().body()
                 .statusCode(201);
 
-        LeituraModel leituraModel = LeituraFactory.criarLeituraLivroStatusEstouLendo(responseLivro.jsonPath().getInt("id"));
+        LeituraStatusModel leituraStatusModel = LeituraStatusFactory.criarLeituraLivroStatusEstouLendo(responseLivro.jsonPath().getInt("id"));
 
-        Response responseLeitura = LeituraClient.criarLeitura(token, leituraModel);
+        Response responseLeitura = LeituraClient.criarLeituraStatus(token, leituraStatusModel);
 
         responseLeitura
                 .then()
@@ -90,9 +89,9 @@ public class LeituraCriarStatusTest extends BaseTest {
                 .log().body()
                 .statusCode(201);
 
-        LeituraModel leituraModel = LeituraFactory.criarLeituraLivroStatusLivroLido(responseLivro.jsonPath().getInt("id"));
+        LeituraStatusModel leituraStatusModel = LeituraStatusFactory.criarLeituraLivroStatusLivroLido(responseLivro.jsonPath().getInt("id"));
 
-        Response responseLeitura = LeituraClient.criarLeitura(token, leituraModel);
+        Response responseLeitura = LeituraClient.criarLeituraStatus(token, leituraStatusModel);
 
         responseLeitura
                 .then()
@@ -111,9 +110,9 @@ public class LeituraCriarStatusTest extends BaseTest {
                 .log().body()
                 .statusCode(201);
 
-        LeituraModel leituraModel = LeituraFactory.criarLeituraLivroStatusLivroAbandonado(responseLivro.jsonPath().getInt("id"));
+        LeituraStatusModel leituraStatusModel = LeituraStatusFactory.criarLeituraLivroStatusLivroAbandonado(responseLivro.jsonPath().getInt("id"));
 
-        Response responseLeitura = LeituraClient.criarLeitura(token, leituraModel);
+        Response responseLeitura = LeituraClient.criarLeituraStatus(token, leituraStatusModel);
 
         responseLeitura
                 .then()
