@@ -1,6 +1,7 @@
 package factories;
 
 import models.DiarioModel;
+import utils.DataFakerUtils;
 
 public class DiarioFactory {
 
@@ -9,13 +10,13 @@ public class DiarioFactory {
         DiarioModel diario = new DiarioModel();
 
         diario.setLivroId(livroID);
-        diario.setInicioDaLeitura("08/03/2026 10:00:00");
-        diario.setTerminoDaLeitura("08/03/2026 12:00:00");
-        diario.setPaginasLidas(20);
-        diario.setNota(3.0);
-        diario.setTituloDaResenha("Teste titulo resenha lido");
-        diario.setResenha("resenha lido");
-        diario.setSpoiler(true);
+        diario.setInicioDaLeitura(DataFakerUtils.dataInicio());
+        diario.setTerminoDaLeitura(DataFakerUtils.dataTermino());
+        diario.setPaginasLidas(DataFakerUtils.paginasLidas());
+        diario.setNota(DataFakerUtils.nota());
+        diario.setTituloDaResenha(DataFakerUtils.tituloResenha());
+        diario.setResenha(DataFakerUtils.resenha());
+        diario.setSpoiler(DataFakerUtils.spoiler());
         return diario;
 
     }
