@@ -2,7 +2,10 @@ package utils;
 
 import net.datafaker.Faker;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Locale;
+import java.util.concurrent.TimeUnit;
 
 public class DataFakerUtils {
 
@@ -118,4 +121,49 @@ public class DataFakerUtils {
         return sinopse;
     }
 
+    public static String dataInicio() {
+        Date date = faker.date().past(30, TimeUnit.DAYS);
+        SimpleDateFormat formato = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+
+        return formato.format(date);
+    }
+
+    public static String dataTermino() {
+        Date date = faker.date().past(5, TimeUnit.DAYS);
+        SimpleDateFormat formato = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+
+        return formato.format(date);
+    }
+
+    public static double nota() {
+        return faker.number().randomDouble(1,1,5);
+    }
+
+    public static int paginasLidas() {
+        return faker.number().numberBetween(1, 1000);
+    }
+
+    public static String tituloResenha() {
+        return faker.lorem().characters(1, 250);
+    }
+
+    public static String resenha() {
+        return faker.lorem().characters(100, 300);
+    }
+
+    public static boolean spoiler() {
+        return faker.bool().bool();
+    }
+
+    public static int paginaInicial() {
+        return faker.number().numberBetween(1, 500);
+    }
+
+    public static int paginaFinal(int paginaInicial) {
+        return faker.number().numberBetween(paginaInicial + 1, 1000);
+    }
+
+    public static String comentario() {
+        return faker.lorem().sentence();
+    }
 }
