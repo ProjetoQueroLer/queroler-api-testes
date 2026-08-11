@@ -24,7 +24,7 @@ import java.io.IOException;
 public class LeituraCriarComentario extends BaseTest {
 
     @Test
-    public void livroDiarioIdComentario() throws IOException {
+    public void criarComentarioDiarioDoLivro() throws IOException {
         String token = UsuarioHelper.loginLeitor();
 
         LivroModel livro = LivroFactory.criarLivroIsbn13();
@@ -34,60 +34,23 @@ public class LeituraCriarComentario extends BaseTest {
                 .log().body()
                 .statusCode(201);
 
-        LeituraStatusModel leituraStatusModel = LeituraStatusFactory.criarLeituraLivroStatusQueroLer(responseLivro.jsonPath().getInt("id"));
+        int livroId = responseLivro.jsonPath().getInt("id");
+
+        LeituraStatusModel leituraStatusModel = LeituraStatusFactory.criarLeituraLivroStatusQueroLer(livroId);
         Response responseLeitura = LeituraClient.criarLeituraStatus(token, leituraStatusModel);
         responseLeitura
                 .then()
                 .log().body()
                 .statusCode(201);
 
-        DiarioModel diarioModel = DiarioFactory.criarDiarioLido(responseLivro.jsonPath().getInt("id"));
-//        DiarioModel diarioModel = DiarioFactory.criarDiarioLendo(responseLivro.jsonPath().getInt("id"));
+        DiarioModel diarioModel = DiarioFactory.criarDiarioLido(livroId);
         Response responseDiario = DiarioClient.criarDiario(token, diarioModel);
         responseDiario
                 .then()
                 .log().body()
                 .statusCode(201);
 
-//        System.out.println("Diario do ID:" + responseDiario.jsonPath().getInt("id"));
-
-        LeituraComentarioModel leituraComentarioModel = LeituraComentarioFactory.criarLeituraComentario();
-//        Response responseLeituraComentario = LeituraClient.criarLeituraComentario(token, responseDiario.jsonPath().getInt("id"));
-        Response responseLeituraComentario = LeituraClient.criarLeituraComentario(token, 6, leituraComentarioModel);
-        responseLeituraComentario
-                .then()
-                .log().body()
-                .statusCode(201);
-    }
-
-    @Test
-    public void livroDiarioIdComentario1() throws IOException {
-        String token = UsuarioHelper.loginLeitor();
-
-        LivroModel livro = LivroFactory.criarLivroIsbn13();
-        Response responseLivro = LivroHelper.criarLivroCadastrar(token, livro);
-        responseLivro
-                .then()
-                .log().body()
-                .statusCode(201);
-
-        LeituraStatusModel leituraStatusModel = LeituraStatusFactory.criarLeituraLivroStatusQueroLer(responseLivro.jsonPath().getInt("id"));
-        Response responseLeitura = LeituraClient.criarLeituraStatus(token, leituraStatusModel);
-        responseLeitura
-                .then()
-                .log().body()
-                .statusCode(201);
-
-        DiarioModel diarioModel = DiarioFactory.criarDiarioLido(responseLivro.jsonPath().getInt("id"));
-//        DiarioModel diarioModel = DiarioFactory.criarDiarioLendo(responseLivro.jsonPath().getInt("id"));
-        Response responseDiario = DiarioClient.criarDiario(token, diarioModel);
-        responseDiario
-                .then()
-                .log().body()
-                .statusCode(201);
-
-        Response responseDiarios = DiarioClient.buscarDiarioPorLivro(token, responseLivro.jsonPath().getInt("id"));
-
+        Response responseDiarios = DiarioClient.buscarDiarioPorLivro(token, livroId);
         responseDiarios
                 .then()
                 .log().body()
@@ -96,7 +59,6 @@ public class LeituraCriarComentario extends BaseTest {
         int diarioId = responseDiarios.jsonPath().getInt("id");
 
         LeituraComentarioModel leituraComentarioModel = LeituraComentarioFactory.criarLeituraComentario();
-//        Response responseLeituraComentario = LeituraClient.criarLeituraComentario(token, responseDiario.jsonPath().getInt("id"));
         Response responseLeituraComentario = LeituraClient.criarLeituraComentario(token, diarioId, leituraComentarioModel);
         responseLeituraComentario
                 .then()
