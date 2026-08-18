@@ -23,6 +23,10 @@ public class DataFakerUtils {
         return faker.regexify("[a-zA-Z]{"+numero+"}");
     }
 
+    public static String caracteresComQuantidade(int valor) {
+        return faker.lorem().characters(valor);
+    }
+
     public static String email() {
         return faker.internet().emailAddress();
     }
@@ -98,7 +102,7 @@ public class DataFakerUtils {
     }
 
     public static int numeroDePagina() {
-        return faker.number().numberBetween(50, 1200);
+        return faker.number().numberBetween(50, 1000);
     }
 
     public static String idioma() {
@@ -131,6 +135,13 @@ public class DataFakerUtils {
     public static String dataTermino() {
         Date date = faker.date().past(5, TimeUnit.DAYS);
         SimpleDateFormat formato = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+
+        return formato.format(date);
+    }
+
+    public static String dataFormatoInvalido() {
+        Date date = faker.date().birthday(18,100);
+        SimpleDateFormat formato = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 
         return formato.format(date);
     }
