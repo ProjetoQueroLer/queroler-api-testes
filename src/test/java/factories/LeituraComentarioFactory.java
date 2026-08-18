@@ -17,4 +17,14 @@ public class LeituraComentarioFactory {
 
         return leituraComentarioModel;
     }
+
+    public static LeituraComentarioModel leituraTodosNulos() {
+        LeituraComentarioModel leituraComentarioModel = new LeituraComentarioModel();
+
+        leituraComentarioModel.setPaginaInicial(null);
+        leituraComentarioModel.setPaginaFinal(null);
+        leituraComentarioModel.setComentario(null);
+
+        return leituraComentarioModel;
+    }
 }
