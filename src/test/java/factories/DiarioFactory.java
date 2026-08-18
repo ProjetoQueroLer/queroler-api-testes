@@ -21,6 +21,22 @@ public class DiarioFactory {
 
     }
 
+    public static DiarioModel terminoLeituraAnteriorAoInicio(Integer livroID) {
+
+        DiarioModel diario = new DiarioModel();
+
+        diario.setLivroId(livroID);
+        diario.setInicioDaLeitura(DataFakerUtils.dataTermino());
+        diario.setTerminoDaLeitura(DataFakerUtils.dataInicio());
+        diario.setPaginasLidas(DataFakerUtils.paginasLidas());
+        diario.setNota(DataFakerUtils.nota());
+        diario.setTituloDaResenha(DataFakerUtils.tituloResenha());
+        diario.setResenha(DataFakerUtils.resenha());
+        diario.setSpoiler(DataFakerUtils.spoiler());
+        return diario;
+
+    }
+
     public static DiarioModel criarDiarioLendo(Integer livroID) {
 
         DiarioModel diario = new DiarioModel();
