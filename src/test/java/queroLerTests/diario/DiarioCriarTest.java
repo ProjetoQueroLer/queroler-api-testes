@@ -45,19 +45,7 @@ public class DiarioCriarTest extends BaseTest {
     public void cadastrarDiarioLivro() throws IOException {
         String token = UsuarioHelper.loginLeitor();
 
-        LivroModel livro = LivroFactory.criarLivroIsbn13();
-        Response responseLivro = LivroHelper.criarLivroCadastrar(token, livro);
-        responseLivro
-                .then()
-                .statusCode(201);
-
-        int livroId = responseLivro.jsonPath().getInt("id");
-
-        LeituraStatusModel leituraStatusModel = LeituraStatusFactory.criarLeituraLivroStatusQueroLer(livroId);
-        Response responseLeitura = LeituraClient.criarLeituraStatus(token, leituraStatusModel);
-        responseLeitura
-                .then()
-                .statusCode(201);
+        int livroId = criarLivroId(token);
 
         DiarioModel diarioModel = DiarioFactory.criarDiarioLido(livroId);
         Response responseDiario = DiarioClient.criarDiario(token, diarioModel);
@@ -72,19 +60,7 @@ public class DiarioCriarTest extends BaseTest {
     public void deveRecusarTerminoLeituraAnteriorAoInicio() throws IOException {
         String token = UsuarioHelper.loginLeitor();
 
-        LivroModel livro = LivroFactory.criarLivroIsbn13();
-        Response responseLivro = LivroHelper.criarLivroCadastrar(token, livro);
-        responseLivro
-                .then()
-                .statusCode(201);
-
-        int livroId = responseLivro.jsonPath().getInt("id");
-
-        LeituraStatusModel leituraStatusModel = LeituraStatusFactory.criarLeituraLivroStatusQueroLer(livroId);
-        Response responseLeitura = LeituraClient.criarLeituraStatus(token, leituraStatusModel);
-        responseLeitura
-                .then()
-                .statusCode(201);
+        int livroId = criarLivroId(token);
 
         DiarioModel diarioModel = DiarioFactory.terminoLeituraAnteriorAoInicio(livroId);
         Response responseDiario = DiarioClient.criarDiario(token, diarioModel);
@@ -99,19 +75,7 @@ public class DiarioCriarTest extends BaseTest {
     public void deveRecusarInicioDaLeituraDataComFormatoInvalido() throws IOException {
         String token = UsuarioHelper.loginLeitor();
 
-        LivroModel livro = LivroFactory.criarLivroIsbn13();
-        Response responseLivro = LivroHelper.criarLivroCadastrar(token, livro);
-        responseLivro
-                .then()
-                .statusCode(201);
-
-        int livroId = responseLivro.jsonPath().getInt("id");
-
-        LeituraStatusModel leituraStatusModel = LeituraStatusFactory.criarLeituraLivroStatusQueroLer(livroId);
-        Response responseLeitura = LeituraClient.criarLeituraStatus(token, leituraStatusModel);
-        responseLeitura
-                .then()
-                .statusCode(201);
+        int livroId = criarLivroId(token);
 
         DiarioModel diarioModel = DiarioFactory.criarDiarioLido(livroId);
         diarioModel.setInicioDaLeitura(DataFakerUtils.dataFormatoInvalido());
@@ -127,19 +91,7 @@ public class DiarioCriarTest extends BaseTest {
     public void deveRecusarTerminoDaLeituraDataComFormatoInvalido() throws IOException {
         String token = UsuarioHelper.loginLeitor();
 
-        LivroModel livro = LivroFactory.criarLivroIsbn13();
-        Response responseLivro = LivroHelper.criarLivroCadastrar(token, livro);
-        responseLivro
-                .then()
-                .statusCode(201);
-
-        int livroId = responseLivro.jsonPath().getInt("id");
-
-        LeituraStatusModel leituraStatusModel = LeituraStatusFactory.criarLeituraLivroStatusQueroLer(livroId);
-        Response responseLeitura = LeituraClient.criarLeituraStatus(token, leituraStatusModel);
-        responseLeitura
-                .then()
-                .statusCode(201);
+        int livroId = criarLivroId(token);
 
         DiarioModel diarioModel = DiarioFactory.criarDiarioLido(livroId);
         diarioModel.setTerminoDaLeitura(DataFakerUtils.dataFormatoInvalido());
@@ -155,19 +107,7 @@ public class DiarioCriarTest extends BaseTest {
     public void inicioLeituraObrigatorio() throws IOException {
         String token = UsuarioHelper.loginLeitor();
 
-        LivroModel livro = LivroFactory.criarLivroIsbn13();
-        Response responseLivro = LivroHelper.criarLivroCadastrar(token, livro);
-        responseLivro
-                .then()
-                .statusCode(201);
-
-        int livroId = responseLivro.jsonPath().getInt("id");
-
-        LeituraStatusModel leituraStatusModel = LeituraStatusFactory.criarLeituraLivroStatusQueroLer(livroId);
-        Response responseLeitura = LeituraClient.criarLeituraStatus(token, leituraStatusModel);
-        responseLeitura
-                .then()
-                .statusCode(201);
+        int livroId = criarLivroId(token);
 
         DiarioModel diarioModel = DiarioFactory.criarDiarioLido(livroId);
         diarioModel.setInicioDaLeitura(null);
@@ -183,19 +123,7 @@ public class DiarioCriarTest extends BaseTest {
     public void paginasLidasValorNegativo() throws IOException {
         String token = UsuarioHelper.loginLeitor();
 
-        LivroModel livro = LivroFactory.criarLivroIsbn13();
-        Response responseLivro = LivroHelper.criarLivroCadastrar(token, livro);
-        responseLivro
-                .then()
-                .statusCode(201);
-
-        int livroId = responseLivro.jsonPath().getInt("id");
-
-        LeituraStatusModel leituraStatusModel = LeituraStatusFactory.criarLeituraLivroStatusQueroLer(livroId);
-        Response responseLeitura = LeituraClient.criarLeituraStatus(token, leituraStatusModel);
-        responseLeitura
-                .then()
-                .statusCode(201);
+        int livroId = criarLivroId(token);
 
         DiarioModel diarioModel = DiarioFactory.criarDiarioLido(livroId);
         diarioModel.setPaginasLidas(-1);
@@ -210,19 +138,7 @@ public class DiarioCriarTest extends BaseTest {
     public void paginasLidasValorNulo() throws IOException {
         String token = UsuarioHelper.loginLeitor();
 
-        LivroModel livro = LivroFactory.criarLivroIsbn13();
-        Response responseLivro = LivroHelper.criarLivroCadastrar(token, livro);
-        responseLivro
-                .then()
-                .statusCode(201);
-
-        int livroId = responseLivro.jsonPath().getInt("id");
-
-        LeituraStatusModel leituraStatusModel = LeituraStatusFactory.criarLeituraLivroStatusQueroLer(livroId);
-        Response responseLeitura = LeituraClient.criarLeituraStatus(token, leituraStatusModel);
-        responseLeitura
-                .then()
-                .statusCode(201);
+        int livroId = criarLivroId(token);
 
         DiarioModel diarioModel = DiarioFactory.criarDiarioLido(livroId);
         diarioModel.setPaginasLidas(null);
@@ -238,18 +154,13 @@ public class DiarioCriarTest extends BaseTest {
         String token = UsuarioHelper.loginLeitor();
 
         LivroModel livro = LivroFactory.criarLivroIsbn13();
+
         Response responseLivro = LivroHelper.criarLivroCadastrar(token, livro);
         responseLivro
                 .then()
                 .statusCode(201);
 
         int livroId = responseLivro.jsonPath().getInt("id");
-
-        LeituraStatusModel leituraStatusModel = LeituraStatusFactory.criarLeituraLivroStatusQueroLer(livroId);
-        Response responseLeitura = LeituraClient.criarLeituraStatus(token, leituraStatusModel);
-        responseLeitura
-                .then()
-                .statusCode(201);
 
         DiarioModel diarioModel = DiarioFactory.criarDiarioLido(livroId);
         diarioModel.setPaginasLidas(livro.getNumeroDePaginas()+1);
@@ -270,19 +181,7 @@ public class DiarioCriarTest extends BaseTest {
     public void notaValorInvalido(double notas) throws IOException {
         String token = UsuarioHelper.loginLeitor();
 
-        LivroModel livro = LivroFactory.criarLivroIsbn13();
-        Response responseLivro = LivroHelper.criarLivroCadastrar(token, livro);
-        responseLivro
-                .then()
-                .statusCode(201);
-
-        int livroId = responseLivro.jsonPath().getInt("id");
-
-        LeituraStatusModel leituraStatusModel = LeituraStatusFactory.criarLeituraLivroStatusQueroLer(livroId);
-        Response responseLeitura = LeituraClient.criarLeituraStatus(token, leituraStatusModel);
-        responseLeitura
-                .then()
-                .statusCode(201);
+        int livroId = criarLivroId(token);
 
         DiarioModel diarioModel = DiarioFactory.criarDiarioLido(livroId);
         diarioModel.setNota(notas);
@@ -297,19 +196,7 @@ public class DiarioCriarTest extends BaseTest {
     public void tituloDaResenhaNulo() throws IOException {
         String token = UsuarioHelper.loginLeitor();
 
-        LivroModel livro = LivroFactory.criarLivroIsbn13();
-        Response responseLivro = LivroHelper.criarLivroCadastrar(token, livro);
-        responseLivro
-                .then()
-                .statusCode(201);
-
-        int livroId = responseLivro.jsonPath().getInt("id");
-
-        LeituraStatusModel leituraStatusModel = LeituraStatusFactory.criarLeituraLivroStatusQueroLer(livroId);
-        Response responseLeitura = LeituraClient.criarLeituraStatus(token, leituraStatusModel);
-        responseLeitura
-                .then()
-                .statusCode(201);
+        int livroId = criarLivroId(token);
 
         DiarioModel diarioModel = DiarioFactory.criarDiarioLido(livroId);
         diarioModel.setTituloDaResenha(null);
@@ -324,19 +211,7 @@ public class DiarioCriarTest extends BaseTest {
     public void tituloDaResenhaMais250Caracteres() throws IOException {
         String token = UsuarioHelper.loginLeitor();
 
-        LivroModel livro = LivroFactory.criarLivroIsbn13();
-        Response responseLivro = LivroHelper.criarLivroCadastrar(token, livro);
-        responseLivro
-                .then()
-                .statusCode(201);
-
-        int livroId = responseLivro.jsonPath().getInt("id");
-
-        LeituraStatusModel leituraStatusModel = LeituraStatusFactory.criarLeituraLivroStatusQueroLer(livroId);
-        Response responseLeitura = LeituraClient.criarLeituraStatus(token, leituraStatusModel);
-        responseLeitura
-                .then()
-                .statusCode(201);
+        int livroId = criarLivroId(token);
 
         DiarioModel diarioModel = DiarioFactory.criarDiarioLido(livroId);
         diarioModel.setTituloDaResenha(DataFakerUtils.caracteresComQuantidade(251));
@@ -351,19 +226,7 @@ public class DiarioCriarTest extends BaseTest {
     public void resenhaNulo() throws IOException {
         String token = UsuarioHelper.loginLeitor();
 
-        LivroModel livro = LivroFactory.criarLivroIsbn13();
-        Response responseLivro = LivroHelper.criarLivroCadastrar(token, livro);
-        responseLivro
-                .then()
-                .statusCode(201);
-
-        int livroId = responseLivro.jsonPath().getInt("id");
-
-        LeituraStatusModel leituraStatusModel = LeituraStatusFactory.criarLeituraLivroStatusQueroLer(livroId);
-        Response responseLeitura = LeituraClient.criarLeituraStatus(token, leituraStatusModel);
-        responseLeitura
-                .then()
-                .statusCode(201);
+        int livroId = criarLivroId(token);
 
         DiarioModel diarioModel = DiarioFactory.criarDiarioLido(livroId);
         diarioModel.setResenha(null);
@@ -378,6 +241,19 @@ public class DiarioCriarTest extends BaseTest {
     public void resenhaMenos100Caracteres() throws IOException {
         String token = UsuarioHelper.loginLeitor();
 
+        int livroId = criarLivroId(token);
+
+        DiarioModel diarioModel = DiarioFactory.criarDiarioLido(livroId);
+        diarioModel.setResenha(DataFakerUtils.caracteresComQuantidade(50));
+        Response responseDiario = DiarioClient.criarDiario(token, diarioModel);
+        responseDiario
+                .then()
+                .log().body()
+                .statusCode(400);
+    }
+
+    private int criarLivroId(String token) throws IOException {
+
         LivroModel livro = LivroFactory.criarLivroIsbn13();
         Response responseLivro = LivroHelper.criarLivroCadastrar(token, livro);
         responseLivro
@@ -392,13 +268,6 @@ public class DiarioCriarTest extends BaseTest {
                 .then()
                 .statusCode(201);
 
-        DiarioModel diarioModel = DiarioFactory.criarDiarioLido(livroId);
-        diarioModel.setResenha(DataFakerUtils.caracteresComQuantidade(50));
-        Response responseDiario = DiarioClient.criarDiario(token, diarioModel);
-        responseDiario
-                .then()
-                .log().body()
-                .statusCode(400);
+        return livroId;
     }
-
 }
