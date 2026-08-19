@@ -78,4 +78,26 @@ public class UsuarioHelper {
                 .cookie("jwt");
     }
 
+    public static String loginAdministrador() {
+        LoginModel usuarioLogin = new LoginModel();
+        usuarioLogin.setUser(ConfigProperties.get("admin.email"));
+        usuarioLogin.setSenha(ConfigProperties.get("admin.password"));
+        return LoginClient.acessarLogin(usuarioLogin)
+                .then()
+                .statusCode(200)
+                .extract()
+                .cookie("jwt");
+    }
+
+    public static String loginModerador() {
+        LoginModel usuarioLogin = new LoginModel();
+        usuarioLogin.setUser(ConfigProperties.get("moderador.email"));
+        usuarioLogin.setSenha(ConfigProperties.get("moderador.password"));
+        return LoginClient.acessarLogin(usuarioLogin)
+                .then()
+                .statusCode(200)
+                .extract()
+                .cookie("jwt");
+    }
+
 }

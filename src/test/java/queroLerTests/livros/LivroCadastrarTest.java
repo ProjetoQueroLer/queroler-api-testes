@@ -23,6 +23,22 @@ import static utils.UsuarioHelper.logResposta;
 public class LivroCadastrarTest extends BaseTest {
 
     @Test
+    public void usuarioAdmCadastrarLivroIsbn13Digitos() throws IOException {
+        String token = UsuarioHelper.loginAdministrador();
+
+        LivroModel livro = LivroFactory.criarLivroIsbn13();
+
+        Response responseLivro = LivroHelper.criarLivroCadastrar(token, livro);
+        responseLivro
+                .then()
+                .log().body()
+                .statusCode(201);
+
+        logResposta("POST/livros", responseLivro);
+
+    }
+
+    @Test
     public void cadastrarLivroIsbn13Digitos() throws IOException {
         String token = UsuarioHelper.loginLeitor();
 
