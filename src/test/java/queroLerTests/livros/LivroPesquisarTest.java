@@ -27,7 +27,7 @@ public class LivroPesquisarTest extends BaseTest {
     @Test
     public void pesquisarLivroTituloMais256Caracteres() {
         String token = UsuarioHelper.loginLeitor();
-        String titulo = DataFakerUtils.caracteresAleatorios("260");
+        String titulo = DataFakerUtils.caracteresComQuantidade(260);
 
         Response responseLivroTitulo = LivrosClient.pesquisarLivroTitulo(token, titulo);
         responseLivroTitulo
@@ -64,7 +64,7 @@ public class LivroPesquisarTest extends BaseTest {
     @Test
     public void pesquisarLivroTituloInexistente() {
         String token = UsuarioHelper.loginLeitor();
-        String titulo = DataFakerUtils.nomeAleatorio();
+        String titulo = DataFakerUtils.caracteresComQuantidade(10);
 
         Response responseLivroTitulo = LivrosClient.pesquisarLivroTitulo(token, titulo);
         responseLivroTitulo
@@ -101,7 +101,7 @@ public class LivroPesquisarTest extends BaseTest {
     @Test
     public void pesquisarLivroAutorInexistente() {
         String token = UsuarioHelper.loginLeitor();
-        String autores = DataFakerUtils.nomeAleatorio();
+        String autores = DataFakerUtils.caracteresComQuantidade(10);
 
         Response responseLivroAutor = LivrosClient.pesquisarLivroAutor(token, autores);
         responseLivroAutor
@@ -138,7 +138,7 @@ public class LivroPesquisarTest extends BaseTest {
     @Test
     public void pesquisarLivroEditoraInexistente() {
         String token = UsuarioHelper.loginLeitor();
-        String editora = DataFakerUtils.nomeAleatorio();
+        String editora = DataFakerUtils.caracteresComQuantidade(10);
 
         Response responseLivroEditora = LivrosClient.pesquisarLivroEditora(token, editora);
         responseLivroEditora

@@ -80,7 +80,7 @@ public class UsuarioFactory {
         String email = DataFakerUtils.email();
         usuario.setEmail(email);
         usuario.setConfirmarEmail(email);
-        String caracteres = DataFakerUtils.caracteres(101);
+        String caracteres = DataFakerUtils.caracteresComQuantidade(101);
         usuario.setSenha(caracteres);
         usuario.setConfirmarSenha(caracteres);
         usuario.setCpf(DataFakerUtils.cpf());
@@ -94,7 +94,7 @@ public class UsuarioFactory {
 
         UsuarioModel usuario = new UsuarioModel();
 
-        usuario.setNome(DataFakerUtils.nomeMais80Caracteres());
+        usuario.setNome(DataFakerUtils.caracteresComQuantidade(81));
         String email = DataFakerUtils.email();
         usuario.setEmail(email);
         usuario.setConfirmarEmail(email);

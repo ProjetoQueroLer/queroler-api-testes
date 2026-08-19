@@ -175,7 +175,6 @@ public class DiarioCriarTest extends BaseTest {
     @ValueSource(doubles = {
             -1,
             0,
-            4.555,
             6,
     })
     public void notaValorInvalido(double notas) throws IOException {
@@ -189,7 +188,28 @@ public class DiarioCriarTest extends BaseTest {
         responseDiario
                 .then()
                 .log().body()
-                .statusCode(400);
+                .statusCode(400)
+                .body(equalTo("nota deve estar entre 0.5 e 5.0."));
+    }
+
+    @ParameterizedTest
+    @ValueSource(doubles = {
+            0.55,
+            4.555,
+    })
+    public void notaValorDecimalInvalido(double notas) throws IOException {
+        String token = UsuarioHelper.loginLeitor();
+
+        int livroId = criarLivroId(token);
+
+        DiarioModel diarioModel = DiarioFactory.criarDiarioLido(livroId);
+        diarioModel.setNota(notas);
+        Response responseDiario = DiarioClient.criarDiario(token, diarioModel);
+        responseDiario
+                .then()
+                .log().body()
+                .statusCode(400)
+                .body(equalTo("nota deve ser um múltiplo de 0.5."));
     }
 
     @Test

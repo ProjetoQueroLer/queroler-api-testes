@@ -15,14 +15,6 @@ public class DataFakerUtils {
         return faker.name().fullName();
     }
 
-    public static String nomeMais80Caracteres() {
-        return faker.regexify("[a-zA-Z]{81}");
-    }
-
-    public static String caracteresAleatorios(String numero) {
-        return faker.regexify("[a-zA-Z]{"+numero+"}");
-    }
-
     public static String caracteresComQuantidade(int valor) {
         return faker.lorem().characters(valor);
     }
@@ -33,18 +25,6 @@ public class DataFakerUtils {
 
     public static String emailMais256Caracteres(String numero) {
         return faker.regexify("[a-zA-Z0-9]{"+numero+"}") + "@teste.com";
-    }
-
-    public static String caracteres(int numero) {
-        StringBuilder aleatorio = new StringBuilder();
-        aleatorio.append(faker.regexify("[a-z]"));
-        aleatorio.append(faker.regexify("[A-Z]"));
-        aleatorio.append(faker.regexify("[0-9]"));
-        aleatorio.append(faker.regexify("[!@#$&]"));
-        if (numero > 4) {
-            aleatorio.append(faker.regexify("[a-zA-Z0-9!@#$&]{" + (numero - 4) + "}"));
-        }
-        return aleatorio.toString();
     }
 
     public static String cpf() {
@@ -75,10 +55,6 @@ public class DataFakerUtils {
         String restantes = faker.regexify("[A-Za-z0-9@#$%&*!]{4}");
 
         return maiuscula + minuscula + numero + especial + restantes;
-    }
-
-    public static String nomeAleatorio() {
-        return faker.letterify("??????????");
     }
 
     public static String titulo() {
