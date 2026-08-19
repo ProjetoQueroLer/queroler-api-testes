@@ -24,12 +24,7 @@ public class LeituraDeletarStatusTest extends BaseTest {
     public void livroDeletarStatusLivroInexistente() throws IOException {
         String token = UsuarioHelper.loginLeitor();
 
-        LivroModel livro = LivroFactory.criarLivroIsbn13();
-        Response responseLivro = LivroHelper.criarLivroCadastrar(token, livro);
-        responseLivro
-                .then()
-                .log().body()
-                .statusCode(201);
+        criarLivroId(token);
 
         Response responseLeitura = LeituraClient.deletarLeitura(token, -1);
 
@@ -44,25 +39,31 @@ public class LeituraDeletarStatusTest extends BaseTest {
     public void livroDeletarStatusLivroExistente() throws IOException {
         String token = UsuarioHelper.loginLeitor();
 
-        LivroModel livro = LivroFactory.criarLivroIsbn13();
-        Response responseLivro = LivroHelper.criarLivroCadastrar(token, livro);
-        responseLivro
-                .then()
-                .log().body()
-                .statusCode(201);
+        int livroId = criarLivroId(token);
 
-        LeituraStatusModel leituraStatusModel = LeituraStatusFactory.criarLeituraLivroStatusLivroLido(responseLivro.jsonPath().getInt("id"));
+        LeituraStatusModel leituraStatusModel = LeituraStatusFactory.criarLeituraLivroStatusLivroLido(livroId);
         Response responseLeitura = LeituraClient.criarLeituraStatus(token, leituraStatusModel);
         responseLeitura
                 .then()
                 .log().body()
                 .statusCode(201);
 
-        Response responseLeituraDeletar = LeituraClient.deletarLeitura(token, responseLivro.jsonPath().getInt("id"));
+        Response responseLeituraDeletar = LeituraClient.deletarLeitura(token, livroId);
 
         responseLeituraDeletar
                 .then()
                 .log().body()
                 .statusCode(204);
+    }
+
+    private int criarLivroId(String token) throws IOException {
+
+        LivroModel livro = LivroFactory.criarLivroIsbn13();
+        Response responseLivro = LivroHelper.criarLivroCadastrar(token, livro);
+        responseLivro
+                .then()
+                .statusCode(201);
+
+        return responseLivro.jsonPath().getInt("id");
     }
 }

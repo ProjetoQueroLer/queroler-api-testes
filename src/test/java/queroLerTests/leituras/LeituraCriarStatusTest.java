@@ -39,14 +39,9 @@ public class LeituraCriarStatusTest extends BaseTest {
     public void livroAdicionarStatusQueroLer() throws IOException {
         String token = UsuarioHelper.loginLeitor();
 
-        LivroModel livro = LivroFactory.criarLivroIsbn13();
-        Response responseLivro = LivroHelper.criarLivroCadastrar(token, livro);
-        responseLivro
-                .then()
-                .log().body()
-                .statusCode(201);
+        int livroId = criarLivroId(token);
 
-        LeituraStatusModel leituraStatusModel = LeituraStatusFactory.criarLeituraLivroStatusQueroLer(responseLivro.jsonPath().getInt("id"));
+        LeituraStatusModel leituraStatusModel = LeituraStatusFactory.criarLeituraLivroStatusQueroLer(livroId);
 
         Response responseLeitura = LeituraClient.criarLeituraStatus(token, leituraStatusModel);
 
@@ -61,14 +56,9 @@ public class LeituraCriarStatusTest extends BaseTest {
     public void livroAdicionarStatusEstouLendo() throws IOException {
         String token = UsuarioHelper.loginLeitor();
 
-        LivroModel livro = LivroFactory.criarLivroIsbn13();
-        Response responseLivro = LivroHelper.criarLivroCadastrar(token, livro);
-        responseLivro
-                .then()
-                .log().body()
-                .statusCode(201);
+        int livroId = criarLivroId(token);
 
-        LeituraStatusModel leituraStatusModel = LeituraStatusFactory.criarLeituraLivroStatusEstouLendo(responseLivro.jsonPath().getInt("id"));
+        LeituraStatusModel leituraStatusModel = LeituraStatusFactory.criarLeituraLivroStatusEstouLendo(livroId);
 
         Response responseLeitura = LeituraClient.criarLeituraStatus(token, leituraStatusModel);
 
@@ -82,14 +72,9 @@ public class LeituraCriarStatusTest extends BaseTest {
     public void livroAdicionarStatusLivroLido() throws IOException {
         String token = UsuarioHelper.loginLeitor();
 
-        LivroModel livro = LivroFactory.criarLivroIsbn13();
-        Response responseLivro = LivroHelper.criarLivroCadastrar(token, livro);
-        responseLivro
-                .then()
-                .log().body()
-                .statusCode(201);
+        int livroId = criarLivroId(token);
 
-        LeituraStatusModel leituraStatusModel = LeituraStatusFactory.criarLeituraLivroStatusLivroLido(responseLivro.jsonPath().getInt("id"));
+        LeituraStatusModel leituraStatusModel = LeituraStatusFactory.criarLeituraLivroStatusLivroLido(livroId);
 
         Response responseLeitura = LeituraClient.criarLeituraStatus(token, leituraStatusModel);
 
@@ -103,14 +88,9 @@ public class LeituraCriarStatusTest extends BaseTest {
     public void livroAdicionarStatusLivroAbandonado() throws IOException {
         String token = UsuarioHelper.loginLeitor();
 
-        LivroModel livro = LivroFactory.criarLivroIsbn13();
-        Response responseLivro = LivroHelper.criarLivroCadastrar(token, livro);
-        responseLivro
-                .then()
-                .log().body()
-                .statusCode(201);
+        int livroId = criarLivroId(token);
 
-        LeituraStatusModel leituraStatusModel = LeituraStatusFactory.criarLeituraLivroStatusLivroAbandonado(responseLivro.jsonPath().getInt("id"));
+        LeituraStatusModel leituraStatusModel = LeituraStatusFactory.criarLeituraLivroStatusLivroAbandonado(livroId);
 
         Response responseLeitura = LeituraClient.criarLeituraStatus(token, leituraStatusModel);
 
@@ -121,4 +101,14 @@ public class LeituraCriarStatusTest extends BaseTest {
                 .body(equalTo("Transição inválida, para o estado atual somente as transições Quero ler, lendo e lidos podem ser realizadas"));
     }
 
+    private int criarLivroId(String token) throws IOException {
+
+        LivroModel livro = LivroFactory.criarLivroIsbn13();
+        Response responseLivro = LivroHelper.criarLivroCadastrar(token, livro);
+        responseLivro
+                .then()
+                .statusCode(201);
+
+        return responseLivro.jsonPath().getInt("id");
+    }
 }

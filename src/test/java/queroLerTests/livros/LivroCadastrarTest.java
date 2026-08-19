@@ -92,9 +92,9 @@ public class LivroCadastrarTest extends BaseTest {
     public void cadastrarLivroIsbnJaExistente() throws IOException {
         String token = UsuarioHelper.loginLeitor();
 
-        LivroModel livro1 = LivroFactory.criarLivroIsbn();
+        LivroModel livro1 = LivroFactory.criarLivroIsbn13();
         LivroHelper.criarLivroCadastrar(token, livro1);
-        LivroModel livro2 = LivroFactory.criarLivroIsbn();
+        LivroModel livro2 = LivroFactory.criarLivroIsbn13();
         livro2.setIsbn(livro1.getIsbn());
 
         Response responseLivro = LivroHelper.criarLivroCadastrar(token, livro2);
