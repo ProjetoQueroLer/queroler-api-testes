@@ -1,10 +1,12 @@
 package queroLerTests.metas;
 
 import baseTest.BaseTest;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import factories.MetaFactory;
 import models.MetaModel;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import queroLerTests.usuarios.UsuarioCadastrarTest;
 import report.Setup;
 import utils.MetaHelper;
 import utils.UsuarioHelper;
@@ -13,8 +15,8 @@ import utils.UsuarioHelper;
 public class MetaCriarTest extends BaseTest {
 
     @Test
-    public void adicionarMetaLeitor() {
-        String token = UsuarioHelper.loginLeitor();
+    public void adicionarMetaLeitor() throws JsonProcessingException {
+        String token = UsuarioCadastrarTest.cadastrarUsuarioToken();
 
         MetaModel metaLeitura = MetaFactory.adicionarMetaValida();
 
