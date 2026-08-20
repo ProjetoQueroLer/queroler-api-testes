@@ -3,6 +3,7 @@ package utils;
 import net.datafaker.Faker;
 
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.Locale;
 import java.util.concurrent.TimeUnit;
@@ -152,5 +153,25 @@ public class DataFakerUtils {
 
     public static String comentario() {
         return faker.lorem().sentence();
+    }
+
+    public static int anoAtual() {
+        return LocalDate.now().getYear();
+    }
+
+    public static int metaAno() {
+        return faker.number().numberBetween(2020, 2030);
+    }
+
+    public static int metaLivrosAno() {
+        return faker.number().numberBetween(1, 50);
+    }
+
+    public static int metaLivrosMes() {
+        return faker.number().numberBetween(1, 10);
+    }
+
+    public static int metaPaginasDia() {
+        return faker.number().numberBetween(1, 500);
     }
 }
