@@ -16,4 +16,14 @@ public class MetaFactory {
         return meta;
     }
 
+    public static MetaModel atualizarMeta() {
+        MetaModel meta = new MetaModel();
+
+        meta.setMetaLivrosAno(DataFakerUtils.metaLivrosAno());
+        meta.setMetaLivrosMes(DataFakerUtils.metaLivrosMes());
+        meta.setMetaPaginasDia(DataFakerUtils.metaPaginasDia());
+
+        return meta;
+    }
+
 }
