@@ -25,10 +25,7 @@ import static utils.UsuarioHelper.logResposta;
 public class UsuarioCadastrarTest extends BaseTest {
 
     public static String cadastrarUsuarioToken() throws JsonProcessingException {
-        System.out.println("entrou");
         UsuarioModel usuario = UsuarioFactory.criarUsuario();
-        System.out.println(usuario.getEmail());
-        System.out.println(usuario.getSenha());
         UsuarioHelper.criarUsuarioCadastrar(usuario);
         LoginModel login = new LoginModel();
         login.setUser(usuario.getEmail());
