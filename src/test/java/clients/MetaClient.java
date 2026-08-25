@@ -19,6 +19,13 @@ public class MetaClient {
                 .post(EndPoints.METAS);
     }
 
+    public static Response adicionarLivroMeta(String token, int livroId) {
+        return given(BaseTest.requestSpecification)
+                .cookie("jwt", token)
+                .when()
+                .put(EndPoints.METAS + "/adicionar-livro/" + livroId);
+    }
+
     public static Response editarMeta(String token, MetaModel meta) {
         return given(BaseTest.requestSpecification)
                 .cookie("jwt", token)
@@ -33,6 +40,13 @@ public class MetaClient {
                 .cookie("jwt", token)
                 .when()
                 .delete(EndPoints.METAS);
+    }
+
+    public static Response buscarMeta(String token) {
+        return given(BaseTest.requestSpecification)
+                .cookie("jwt", token)
+                .when()
+                .get(EndPoints.METAS);
     }
 
 }

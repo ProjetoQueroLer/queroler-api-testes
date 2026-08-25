@@ -10,5 +10,4 @@ public class MetaModel {
     private Integer metaLivrosMes;
     private Integer metaPaginasDia;
 
-
 }

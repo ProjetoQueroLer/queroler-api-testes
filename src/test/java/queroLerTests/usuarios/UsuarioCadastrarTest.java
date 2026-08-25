@@ -1,10 +1,12 @@
 package queroLerTests.usuarios;
 
 import baseTest.BaseTest;
+import clients.LoginClient;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import factories.UsuarioFactory;
 import io.restassured.module.jsv.JsonSchemaValidator;
 import io.restassured.response.Response;
+import models.LoginModel;
 import models.UsuarioModel;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -21,6 +23,19 @@ import static utils.UsuarioHelper.logResposta;
 
 @ExtendWith(Setup.class)
 public class UsuarioCadastrarTest extends BaseTest {
+
+    public static String cadastrarUsuarioToken() throws JsonProcessingException {
+        UsuarioModel usuario = UsuarioFactory.criarUsuario();
+        UsuarioHelper.criarUsuarioCadastrar(usuario);
+        LoginModel login = new LoginModel();
+        login.setUser(usuario.getEmail());
+        login.setSenha(usuario.getSenha());
+        return LoginClient.acessarLogin(login)
+                .then()
+                .statusCode(200)
+                .extract()
+                .cookie("jwt");
+    }
 
     @Test
     public void cadastrarUsuarioSemFoto() throws JsonProcessingException {
