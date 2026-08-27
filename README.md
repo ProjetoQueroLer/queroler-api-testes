@@ -127,6 +127,8 @@ PUT /usuarios/dados-adicionais
 PUT /usuarios/alterar-senha  
 PUT /usuarios/administrador **(manutenção)**    
 POST /usuarios/livro  
+GET /usuarios/{id}/comentarios **(manutenção)**  
+GET /usuarios/fotos
 ### Login
 POST /logins  
 ### Livro
@@ -135,14 +137,26 @@ GET /livros/{id}/capa
 PUT /livros/{id}/capa  
 GET /livros  
 POST /livros  
+GET /livros/{id} **(manutenção)** -  
 GET /livros/{id}/comentarios **(manutenção)**  
 GET /livros/tela_de_leitura **(manutenção)**  
 GET /livros/populares **(manutenção)**  
 GET /livros/detalhados **(manutenção)**  
 GET /livros/buscar/{isbn}
+### Leitura do livro
+POST /leituras
+DELETE /leituras/{livroId}
+### Diario de leitura
+PUT /diario/{id}  
+DELETE /diario/{id} **(manutenção)**  -
+GET /diario
+POST /diario  
+GET /diario/acompanhamento **(manutenção)** -  
+### Acompanhamento de leitura
+POST /leituras/{diarioId}/comentarios
 ## EM BREVE
-### Notificação
 ### Documento
+### Notificação
 
 ------------
 
