@@ -102,15 +102,15 @@ public class DataFakerUtils {
         return sinopse;
     }
 
-    public static String dataInicio() {
-        Date date = faker.date().past(30, TimeUnit.DAYS);
+    public static String dataAtual() {
+        Date date = new Date();
         SimpleDateFormat formato = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
 
         return formato.format(date);
     }
 
-    public static String dataTermino() {
-        Date date = faker.date().past(5, TimeUnit.DAYS);
+    public static String dataInicio() {
+        Date date = faker.date().past(30, TimeUnit.DAYS);
         SimpleDateFormat formato = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
 
         return formato.format(date);
@@ -124,7 +124,7 @@ public class DataFakerUtils {
     }
 
     public static double nota() {
-        return faker.number().randomDouble(1,1,5);
+        return faker.number().numberBetween(1, 10) / 2.0;
     }
 
     public static int paginasLidas() {
@@ -157,10 +157,6 @@ public class DataFakerUtils {
 
     public static int anoAtual() {
         return LocalDate.now().getYear();
-    }
-
-    public static int metaAno() {
-        return faker.number().numberBetween(2020, 2030);
     }
 
     public static int metaLivrosAno() {
