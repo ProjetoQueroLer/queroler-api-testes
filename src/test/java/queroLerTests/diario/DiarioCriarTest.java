@@ -146,7 +146,8 @@ public class DiarioCriarTest extends BaseTest {
         responseDiario
                 .then()
                 .log().body()
-                .statusCode(400);
+                .statusCode(400)
+                .body(equalTo("{\"paginasLidas\":\"O número de páginas lidas é obrigatório.\"}"));
     }
 
     @Test
@@ -162,13 +163,20 @@ public class DiarioCriarTest extends BaseTest {
 
         int livroId = responseLivro.jsonPath().getInt("id");
 
+        LeituraStatusModel leituraStatusModel = LeituraStatusFactory.criarLeituraLivroStatusQueroLer(livroId);
+        Response responseLeitura = LeituraClient.criarLeituraStatus(token, leituraStatusModel);
+        responseLeitura
+                .then()
+                .statusCode(201);
+
         DiarioModel diarioModel = DiarioFactory.criarDiarioLido(livroId);
         diarioModel.setPaginasLidas(livro.getNumeroDePaginas()+1);
         Response responseDiario = DiarioClient.criarDiario(token, diarioModel);
         responseDiario
                 .then()
                 .log().body()
-                .statusCode(400);
+                .statusCode(409)
+                .body(equalTo("O número de páginas lidas não pode ser maior que o total de páginas do livro. Total: ("+livro.getNumeroDePaginas()+")"));
     }
 
     @ParameterizedTest
