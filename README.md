@@ -153,6 +153,12 @@ POST /diario
 GET /diario/acompanhamento **(manutenção)**  
 ### Acompanhamento de leitura
 POST /leituras/{diarioId}/comentarios
+### Meta
+GET /metas  
+PUT /metas  
+POST /metas  
+DELETE /metas  
+PUT /metas/adicionar-livro/{id}  
 ## EM BREVE
 ### Documento
 ### Notificação
