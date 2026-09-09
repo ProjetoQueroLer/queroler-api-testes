@@ -24,6 +24,7 @@ public class EndPoints {
     public static final String LEITURAS_DIARIOID_COMENTARIO = "leituras/{diarioId}/comentarios";
     public static final String DIARIO = "diario";
     public static final String METAS = "metas";
+    public static final String METAS_ADICIONARLIVRO_ID = "metas/adicionar-livro/{id}";
 
 
 }
