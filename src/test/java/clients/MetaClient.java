@@ -22,11 +22,13 @@ public class MetaClient {
     public static Response adicionarLivroMeta(String token, int livroId) {
         return given(BaseTest.requestSpecification)
                 .cookie("jwt", token)
+                .contentType(ContentType.JSON)
+                .pathParam("id", livroId)
                 .when()
-                .put(EndPoints.METAS + "/adicionar-livro/" + livroId);
+                .put(EndPoints.METAS_ADICIONARLIVRO_ID);
     }
 
-    public static Response editarMeta(String token, MetaModel meta) {
+    public static Response atualizarMeta(String token, MetaModel meta) {
         return given(BaseTest.requestSpecification)
                 .cookie("jwt", token)
                 .contentType(ContentType.JSON)
