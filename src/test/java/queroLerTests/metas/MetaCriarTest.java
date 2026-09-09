@@ -92,6 +92,60 @@ public class MetaCriarTest extends BaseTest {
     }
 
     @Test
+    public void adicionarMetaAdministradorComLivro() throws IOException {
+        String token = UsuarioHelper.loginAdministrador();
+
+        LivroModel livro = LivroFactory.criarLivroIsbn13();
+        Response responseLivro = LivroHelper.criarLivroCadastrar(token, livro);
+        responseLivro
+                .then()
+                .log().body()
+                .statusCode(201);
+
+        int livroId = responseLivro.jsonPath().getInt("id");
+
+        MetaModel metaLeitura = MetaFactory.adicionarMetaValida();
+
+        MetaHelper.adicionarMeta(token, metaLeitura)
+                .then()
+                .log().body()
+                .statusCode(201);
+
+        MetaHelper.adicionarLivroMeta(token, livroId)
+                .then()
+                .log().body()
+                .statusCode(204);
+
+    }
+
+    @Test
+    public void adicionarMetaModeradorComLivro() throws IOException {
+        String token = UsuarioHelper.loginModerador();
+
+        LivroModel livro = LivroFactory.criarLivroIsbn13();
+        Response responseLivro = LivroHelper.criarLivroCadastrar(token, livro);
+        responseLivro
+                .then()
+                .log().body()
+                .statusCode(201);
+
+        int livroId = responseLivro.jsonPath().getInt("id");
+
+        MetaModel metaLeitura = MetaFactory.adicionarMetaValida();
+
+        MetaHelper.adicionarMeta(token, metaLeitura)
+                .then()
+                .log().body()
+                .statusCode(201);
+
+        MetaHelper.adicionarLivroMeta(token, livroId)
+                .then()
+                .log().body()
+                .statusCode(204);
+
+    }
+
+    @Test
     public void adicionarMetaAnoJaExistente() throws JsonProcessingException {
         String token = UsuarioCadastrarTest.cadastrarUsuarioToken();
 
@@ -142,7 +196,7 @@ public class MetaCriarTest extends BaseTest {
                 .then()
                 .log().body()
                 .statusCode(400)
-//                .body(equalTo("O ano informado não pode ser anterior ao corrente."))
+                .body(equalTo("O ano informado deve ser o ano corrente (2026)."))
         ;
 
     }
@@ -158,7 +212,7 @@ public class MetaCriarTest extends BaseTest {
                 .then()
                 .log().body()
                 .statusCode(400)
-//                .body(equalTo("O ano informado não pode ser anterior ao corrente."))
+                .body("metaLivrosAno", equalTo("metaLivrosAno deve ser maior ou igual a zero."))
         ;
     }
 
@@ -173,7 +227,7 @@ public class MetaCriarTest extends BaseTest {
                 .then()
                 .log().body()
                 .statusCode(400)
-//                .body(equalTo("O ano informado não pode ser anterior ao corrente."))
+                .body("metaLivrosMes", equalTo("metaLivrosMes deve ser maior ou igual a zero."))
         ;
     }
 
@@ -188,7 +242,7 @@ public class MetaCriarTest extends BaseTest {
                 .then()
                 .log().body()
                 .statusCode(400)
-//                .body(equalTo("O ano informado não pode ser anterior ao corrente."))
+                .body("metaPaginasDia", equalTo("metaPaginasDia deve ser maior ou igual a zero."))
         ;
     }
 

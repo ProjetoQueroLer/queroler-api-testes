@@ -15,7 +15,11 @@ public class MetaHelper {
     }
 
     public static Response atualizarMeta(String token, MetaModel meta) {
-        return MetaClient.editarMeta(token, meta);
+        return MetaClient.atualizarMeta(token, meta);
+    }
+
+    public static Response atualizarMetaAdicionarLivro(String token, int livroId) {
+        return MetaClient.adicionarLivroMeta(token, livroId);
     }
 
     public static Response deletarMeta(String token) {
