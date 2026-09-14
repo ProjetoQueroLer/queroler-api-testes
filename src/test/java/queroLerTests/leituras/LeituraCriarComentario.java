@@ -15,7 +15,6 @@ import models.LivroModel;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import report.Setup;
-import utils.DataFakerUtils;
 import utils.LivroHelper;
 import utils.UsuarioHelper;
 
@@ -98,6 +97,7 @@ public class LeituraCriarComentario extends BaseTest {
         responseLeituraComentario
                 .then()
                 .log().body()
+                .body("comentario", equalTo("comentario é obrigatório."))
                 .statusCode(400);
     }
 
@@ -114,7 +114,8 @@ public class LeituraCriarComentario extends BaseTest {
         responseLeituraComentario
                 .then()
                 .log().body()
-                .statusCode(500);
+                .body("comentario", equalTo("comentario é obrigatório."))
+                .statusCode(400);
     }
 
     @Test
@@ -145,6 +146,7 @@ public class LeituraCriarComentario extends BaseTest {
         responseLeituraComentario
                 .then()
                 .log().body()
+                .body("paginaInicial", equalTo("paginaInicial deve ser um valor positivo."))
                 .statusCode(400);
     }
 
@@ -160,6 +162,7 @@ public class LeituraCriarComentario extends BaseTest {
         responseLeituraComentario
                 .then()
                 .log().body()
+                .body("paginaFinal", equalTo("paginaFinal deve ser um valor positivo."))
                 .statusCode(400);
     }
 
