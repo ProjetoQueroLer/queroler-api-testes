@@ -40,4 +40,24 @@ public class DiarioClient {
                 .get(EndPoints.DIARIO);
     }
 
+    public static Response deletarDiarioPorLivro(String token, int diarioId) {
+
+        return given(BaseTest.requestSpecification)
+                .cookie("jwt", token)
+                .contentType(ContentType.JSON)
+                .pathParam("id", diarioId)
+                .when()
+                .delete(EndPoints.DIARIO_ID);
+    }
+
+    public static Response atualizarDiarioPorLivro(String token, int diarioId) {
+
+        return given(BaseTest.requestSpecification)
+                .cookie("jwt", token)
+                .contentType(ContentType.JSON)
+                .pathParam("id", diarioId)
+                .when()
+                .put(EndPoints.DIARIO_ID);
+    }
+
 }
