@@ -143,12 +143,12 @@ GET /livros/populares **(manutenção)**
 GET /livros/detalhados **(manutenção)**  
 GET /livros/buscar/{isbn}
 ### Leitura do livro
-POST /leituras
+POST /leituras  
 DELETE /leituras/{livroId}
 ### Diario de leitura
 PUT /diario/{id}  
-DELETE /diario/{id} **(manutenção)**  
-GET /diario
+DELETE /diario/{id}  
+GET /diario  
 POST /diario  
 GET /diario/acompanhamento **(manutenção)**  
 ### Acompanhamento de leitura

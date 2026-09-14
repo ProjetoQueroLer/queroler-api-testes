@@ -18,11 +18,13 @@ import utils.UsuarioHelper;
 
 import java.io.IOException;
 
+import static org.hamcrest.Matchers.equalTo;
+
 @ExtendWith(Setup.class)
-public class DiarioBuscarTest extends BaseTest {
+public class DiarioDeletarTest extends BaseTest {
 
     @Test
-    public void buscarDiarioLivroId() throws IOException {
+    public void deletarDiarioLivroId() throws IOException {
         String token = UsuarioHelper.loginLeitor();
 
         LivroModel livro = LivroFactory.criarLivroIsbn13();
@@ -47,12 +49,24 @@ public class DiarioBuscarTest extends BaseTest {
                 .then()
                 .log().body()
                 .statusCode(201);
+        int diarioId = responseDiario.jsonPath().getInt("id");
+        DiarioClient.deletarDiarioPorLivro(token, diarioId);
 
-        Response responseBuscarDiario = DiarioClient.buscarDiarioLivroId(token, livroId);
-        responseBuscarDiario
+    }
+
+    @Test
+    public void deletarDiarioLivroIdInexistente() {
+        String token = UsuarioHelper.loginLeitor();
+
+        int diarioId = -1;
+
+        Response responseDiario = DiarioClient.deletarDiarioPorLivro(token, diarioId);
+        responseDiario
                 .then()
                 .log().body()
-                .statusCode(200);
+                .statusCode(404)
+                .body(equalTo("Diário de leitura não encontrado."));
+
     }
 
 }
