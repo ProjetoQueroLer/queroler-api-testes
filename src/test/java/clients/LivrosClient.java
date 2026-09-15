@@ -63,6 +63,14 @@ public class LivrosClient {
                 .get(EndPoints.LIVROS);
     }
 
+    public static Response buscarLivroId(String token, int id) {
+        return given(BaseTest.requestSpecification)
+                .cookie("jwt", token)
+                .pathParam("id", id)
+                .when()
+                .get(EndPoints.LIVROS_ID);
+    }
+
     public static Response buscarLivroIsbn(String token, String isbn) {
         return given(BaseTest.requestSpecification)
                 .cookie("jwt", token)
@@ -71,7 +79,7 @@ public class LivrosClient {
                 .get(EndPoints.LIVROS_ISBN);
     }
 
-    public static Response buscarLivroIdCapa(String token, String id) {
+    public static Response buscarLivroIdCapa(String token, int id) {
         return given(BaseTest.requestSpecification)
                 .cookie("jwt", token)
                 .pathParam("id", id)
@@ -117,5 +125,34 @@ public class LivrosClient {
                 .queryParam("sort", "dataDeCadastro,desc")
                 .when()
                 .get(EndPoints.LIVROS);
+    }
+
+    public static Response listarComentariosPorLivro(String token, int idLivro) {
+        return given(BaseTest.requestSpecification)
+                .cookie("jwt", token)
+                .pathParam("id", idLivro)
+                .when()
+                .get(EndPoints.LIVROS_ID_COMENTARIOS);
+    }
+
+    public static Response buscarLivroTelaLeitura(String token) {
+        return given(BaseTest.requestSpecification)
+                .cookie("jwt", token)
+                .when()
+                .get(EndPoints.LIVROS_TELA_DE_LEITURA);
+    }
+
+    public static Response buscarLivroPopulares(String token) {
+        return given(BaseTest.requestSpecification)
+                .cookie("jwt", token)
+                .when()
+                .get(EndPoints.LIVROS_POPULARES);
+    }
+
+    public static Response buscarLivroDetalhado(String token) {
+        return given(BaseTest.requestSpecification)
+                .cookie("jwt", token)
+                .when()
+                .get(EndPoints.LIVROS_DETALHADOS);
     }
 }
