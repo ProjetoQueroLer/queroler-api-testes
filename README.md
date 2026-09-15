@@ -136,11 +136,11 @@ GET /livros/{id}/capa
 PUT /livros/{id}/capa  
 GET /livros  
 POST /livros  
-GET /livros/{id} **(manutenção)**  
-GET /livros/{id}/comentarios **(manutenção)**  
-GET /livros/tela_de_leitura **(manutenção)**  
-GET /livros/populares **(manutenção)**  
-GET /livros/detalhados **(manutenção)**  
+GET /livros/{id}   
+GET /livros/{id}/comentarios   
+GET /livros/tela_de_leitura   
+GET /livros/populares   
+GET /livros/detalhados   
 GET /livros/buscar/{isbn}
 ### Leitura do livro
 POST /leituras  
