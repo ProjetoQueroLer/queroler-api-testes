@@ -35,7 +35,47 @@ public class LivroBuscarTest extends BaseTest {
     }
 
     @Test
-    public void buscarLivroComNumeroIsbn() throws IOException {
+    public void buscarLivroPorId() throws IOException {
+        String token = UsuarioHelper.loginLeitor();
+
+        LivroModel livro = LivroFactory.criarLivroIsbn10();
+
+        Response responseLivro = LivroHelper.criarLivroCadastrar(token, livro);
+        int idLivro = responseLivro.jsonPath().getInt("id");
+        responseLivro
+                .then()
+                .log().body()
+                .statusCode(201);
+
+        Response responseLivroId = LivrosClient.buscarLivroId(token, idLivro);
+        responseLivroId
+                .then()
+                .log().body()
+                .statusCode(200)
+        ;
+
+        logResposta("GET/livros/buscar/" + idLivro, responseLivroId);
+    }
+
+    @Test
+    public void buscarLivroPorIdInexistente() {
+        String token = UsuarioHelper.loginLeitor();
+
+        int idLivro = -1;
+
+        Response responseLivroId = LivrosClient.buscarLivroId(token, idLivro);
+        responseLivroId
+                .then()
+                .log().body()
+                .body(equalTo("Livro não encontrado."))
+                .statusCode(404)
+        ;
+
+        logResposta("GET/livros/buscar/" + idLivro, responseLivroId);
+    }
+
+    @Test
+    public void buscarLivroPorIsbn() throws IOException {
         String token = UsuarioHelper.loginLeitor();
 
         LivroModel livro = LivroFactory.criarLivroIsbn10();
@@ -55,11 +95,11 @@ public class LivroBuscarTest extends BaseTest {
                 .statusCode(200)
         ;
 
-        logResposta("GET/livros", responseLivroIsbn);
+        logResposta("GET/livros/buscar/"+isbn, responseLivroIsbn);
     }
 
     @Test
-    public void buscarLivroIsbnInexistente() {
+    public void buscarLivroPorIsbnInexistente() {
         String token = UsuarioHelper.loginLeitor();
 
         String isbn = "9999999999";
@@ -72,24 +112,7 @@ public class LivroBuscarTest extends BaseTest {
                 .body(equalTo("Não há nenhum livro cadastrado com o código ISBN informado"))
         ;
 
-        logResposta("GET/livros", responseLivroIsbn);
-    }
-
-    @Test
-    public void buscarLivroIdCapaInexistente() {
-        String token = UsuarioHelper.loginLeitor();
-
-        String idCapa = "-1";
-
-        Response responseLivroIsbn = LivrosClient.buscarLivroIdCapa(token, idCapa);
-        responseLivroIsbn
-                .then()
-                .log().body()
-                .statusCode(404)
-                .body(equalTo("Livro não encontrado"))
-        ;
-
-        logResposta("GET/livros", responseLivroIsbn);
+        logResposta("GET/livros/buscar/"+isbn, responseLivroIsbn);
     }
 
 }

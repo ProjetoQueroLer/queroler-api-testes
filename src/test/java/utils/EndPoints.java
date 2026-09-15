@@ -17,8 +17,13 @@ public class EndPoints {
     public static final String USUARIOS_ID_COMENTARIOS = "usuarios/{id}/comentarios";
     public static final String LOGINS = "logins";
     public static final String LIVROS = "livros";
-    public static final String LIVROS_ISBN = "livros/buscar/{isbn}";
+    public static final String LIVROS_ID = "livros/{id}";
     public static final String LIVROS_ID_CAPA = "livros/{id}/capa";
+    public static final String LIVROS_ID_COMENTARIOS = "livros/{id}/comentarios";
+    public static final String LIVROS_TELA_DE_LEITURA = "livros/tela_de_leitura";
+    public static final String LIVROS_POPULARES = "livros/populares";
+    public static final String LIVROS_DETALHADOS = "livros/detalhados";
+    public static final String LIVROS_ISBN = "livros/buscar/{isbn}";
     public static final String LEITURAS = "leituras";
     public static final String LEITURAS_LIVROID = "leituras/{livroId}";
     public static final String LEITURAS_DIARIOID_COMENTARIO = "leituras/{diarioId}/comentarios";

@@ -17,6 +17,10 @@ public class LivroHelper {
         return LivrosClient.criarLivro(token, livro);
     }
 
+    public static Response buscarCapaLivro(String token, Integer idCapa) {
+        return LivrosClient.buscarLivroIdCapa(token, idCapa);
+    }
+
     public static Response atualizarCapaLivro(String token, Integer idLivro, File imagem) {
         return LivrosClient.atualizarCapaLivro(token, idLivro, imagem);
     }
