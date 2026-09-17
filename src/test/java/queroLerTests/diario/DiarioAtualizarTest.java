@@ -9,6 +9,7 @@ import factories.LivroFactory;
 import io.restassured.response.Response;
 import models.DiarioModel;
 import models.LeituraStatusModel;
+import models.LivroCriado;
 import models.LivroModel;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -25,41 +26,58 @@ import static org.hamcrest.Matchers.equalTo;
 public class DiarioAtualizarTest extends BaseTest {
 
     @Test
-    public void atualizarDiarioLivroId() throws IOException {
+    public void atualizarDiario() throws IOException {
         String token = UsuarioHelper.loginLeitor();
 
-        LivroModel livro = LivroFactory.criarLivroIsbn13();
-        Response responseLivro = LivroHelper.criarLivroCadastrar(token, livro);
-        responseLivro
-                .then()
-                .statusCode(201);
+        LivroCriado livroCriado = criarLivro(token);
 
-        int livroId = responseLivro.jsonPath().getInt("id");
-
-        LeituraStatusModel leituraStatusModel = LeituraStatusFactory.criarLeituraLivroStatusQueroLer(livroId);
-        Response responseLeitura = LeituraClient.criarLeituraStatus(token, leituraStatusModel);
-        responseLeitura
-                .then()
-                .statusCode(201);
-
-        DiarioModel diarioModel = DiarioFactory.criarDiarioLido(livroId);
+        DiarioModel diarioModel = DiarioFactory.criarDiarioLido(livroCriado.livroId(), livroCriado.numeroDePaginas());
         Response responseDiario = DiarioClient.criarDiario(token, diarioModel);
         responseDiario
                 .then()
                 .log().body()
                 .statusCode(201);
+
         int diarioId = responseDiario.jsonPath().getInt("id");
-        System.out.println("DIARIO: " + diarioModel);
         DiarioClient.deletarDiarioPorLivro(token, diarioId);
 
         diarioModel.setInicioDaLeitura(DataFakerUtils.dataInicio());
         diarioModel.setTerminoDaLeitura(DataFakerUtils.dataAtual());
-        diarioModel.setPaginasLidas(livro.getNumeroDePaginas()-1);
+        diarioModel.setPaginasLidas(livroCriado.numeroDePaginas()-1);
         diarioModel.setNota(DataFakerUtils.nota());
         diarioModel.setTituloDaResenha(DataFakerUtils.tituloResenha());
         diarioModel.setResenha(DataFakerUtils.resenha());
 
-        Response responseDiarioAtualizar = DiarioClient.criarDiario(token, diarioModel);
+        Response responseDiarioAtualizar = DiarioClient.atualizarDiarioPorLivro(token, diarioId, diarioModel);
+        responseDiarioAtualizar
+                .then()
+                .log().body()
+                .statusCode(204);
+    }
+
+    @Test
+    public void atualizarDiarioLivroIdInvalido() throws IOException {
+        String token = UsuarioHelper.loginLeitor();
+
+        LivroCriado livroCriado = criarLivro(token);
+
+        DiarioModel diarioModel = DiarioFactory.criarDiarioLido(livroCriado.livroId(), livroCriado.numeroDePaginas());
+        Response responseDiario = DiarioClient.criarDiario(token, diarioModel);
+        responseDiario
+                .then()
+                .log().body()
+                .statusCode(201);
+
+        int diarioId = responseDiario.jsonPath().getInt("id");
+
+        diarioModel.setInicioDaLeitura(DataFakerUtils.dataInicio());
+        diarioModel.setTerminoDaLeitura(DataFakerUtils.dataAtual());
+        diarioModel.setPaginasLidas(livroCriado.numeroDePaginas()-1);
+        diarioModel.setNota(DataFakerUtils.nota());
+        diarioModel.setTituloDaResenha(DataFakerUtils.tituloResenha());
+        diarioModel.setResenha(DataFakerUtils.resenha());
+
+        Response responseDiarioAtualizar = DiarioClient.atualizarDiarioPorLivro(token, diarioId, diarioModel);
         responseDiarioAtualizar
                 .then()
                 .log().body()
@@ -67,16 +85,12 @@ public class DiarioAtualizarTest extends BaseTest {
                 .body(equalTo("Transição inválida, para o estado atual somente a transições relendo pode ser realizada"));
     }
 
-    @Test
-    public void atualizarDiarioLivroIdInvalido() throws IOException {
-        String token = UsuarioHelper.loginLeitor();
-
-        LivroModel livro = LivroFactory.criarLivroIsbn13();
-        Response responseLivro = LivroHelper.criarLivroCadastrar(token, livro);
+    private LivroCriado criarLivro(String token) throws IOException {
+        LivroModel livroModel = LivroFactory.criarLivroIsbn13();
+        Response responseLivro = LivroHelper.criarLivroCadastrar(token, livroModel);
         responseLivro
                 .then()
                 .statusCode(201);
-
         int livroId = responseLivro.jsonPath().getInt("id");
 
         LeituraStatusModel leituraStatusModel = LeituraStatusFactory.criarLeituraLivroStatusQueroLer(livroId);
@@ -85,26 +99,7 @@ public class DiarioAtualizarTest extends BaseTest {
                 .then()
                 .statusCode(201);
 
-        DiarioModel diarioModel = DiarioFactory.criarDiarioLido(livroId);
-        Response responseDiario = DiarioClient.criarDiario(token, diarioModel);
-        responseDiario
-                .then()
-                .log().body()
-                .statusCode(201);
-        System.out.println("DIARIO: " + diarioModel);
-        diarioModel.setInicioDaLeitura(DataFakerUtils.dataInicio());
-        diarioModel.setTerminoDaLeitura(DataFakerUtils.dataAtual());
-        diarioModel.setPaginasLidas(livro.getNumeroDePaginas()-1);
-        diarioModel.setNota(DataFakerUtils.nota());
-        diarioModel.setTituloDaResenha(DataFakerUtils.tituloResenha());
-        diarioModel.setResenha(DataFakerUtils.resenha());
-
-        Response responseDiarioAtualizar = DiarioClient.criarDiario(token, diarioModel);
-        responseDiarioAtualizar
-                .then()
-                .log().body()
-                .statusCode(409)
-                .body(equalTo("Transição inválida, para o estado atual somente a transições relendo pode ser realizada"));
+        return new LivroCriado(livroId, livroModel.getNumeroDePaginas());
     }
 
 }
