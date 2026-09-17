@@ -9,6 +9,7 @@ import factories.LivroFactory;
 import io.restassured.response.Response;
 import models.DiarioModel;
 import models.LeituraStatusModel;
+import models.LivroCriado;
 import models.LivroModel;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -27,30 +28,21 @@ public class DiarioDeletarTest extends BaseTest {
     public void deletarDiarioLivroId() throws IOException {
         String token = UsuarioHelper.loginLeitor();
 
-        LivroModel livro = LivroFactory.criarLivroIsbn13();
-        Response responseLivro = LivroHelper.criarLivroCadastrar(token, livro);
-        responseLivro
-                .then()
-                .statusCode(201);
+        LivroCriado livroCriado = criarLivro(token);
 
-        int livroId = responseLivro.jsonPath().getInt("id");
-
-        LeituraStatusModel leituraStatusModel = LeituraStatusFactory.criarLeituraLivroStatusQueroLer(livroId);
-        Response responseLeitura = LeituraClient.criarLeituraStatus(token, leituraStatusModel);
-        responseLeitura
-                .then()
-                .log().body()
-                .statusCode(201);
-
-        DiarioModel diarioModel = DiarioFactory.criarDiarioLido(livroId);
-        diarioModel.setPaginasLidas(livro.getNumeroDePaginas()-1);
+        DiarioModel diarioModel = DiarioFactory.criarDiarioLido(livroCriado.livroId(), livroCriado.numeroDePaginas());
         Response responseDiario = DiarioClient.criarDiario(token, diarioModel);
         responseDiario
                 .then()
                 .log().body()
                 .statusCode(201);
         int diarioId = responseDiario.jsonPath().getInt("id");
-        DiarioClient.deletarDiarioPorLivro(token, diarioId);
+
+        Response responseDiarioDeletar = DiarioClient.deletarDiarioPorLivro(token, diarioId);
+        responseDiarioDeletar
+                .then()
+                .log().body()
+                .statusCode(204);
 
     }
 
@@ -67,6 +59,23 @@ public class DiarioDeletarTest extends BaseTest {
                 .statusCode(404)
                 .body(equalTo("Diário de leitura não encontrado."));
 
+    }
+
+    private LivroCriado criarLivro(String token) throws IOException {
+        LivroModel livroModel = LivroFactory.criarLivroIsbn13();
+        Response responseLivro = LivroHelper.criarLivroCadastrar(token, livroModel);
+        responseLivro
+                .then()
+                .statusCode(201);
+        int livroId = responseLivro.jsonPath().getInt("id");
+
+        LeituraStatusModel leituraStatusModel = LeituraStatusFactory.criarLeituraLivroStatusQueroLer(livroId);
+        Response responseLeitura = LeituraClient.criarLeituraStatus(token, leituraStatusModel);
+        responseLeitura
+                .then()
+                .statusCode(201);
+
+        return new LivroCriado(livroId, livroModel.getNumeroDePaginas());
     }
 
 }

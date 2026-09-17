@@ -9,6 +9,7 @@ import factories.LivroFactory;
 import io.restassured.response.Response;
 import models.DiarioModel;
 import models.LeituraStatusModel;
+import models.LivroCriado;
 import models.LivroModel;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -45,9 +46,10 @@ public class DiarioCriarTest extends BaseTest {
     public void cadastrarDiarioLivro() throws IOException {
         String token = UsuarioHelper.loginLeitor();
 
-        int livroId = criarLivroId(token);
+        LivroCriado livroCriado = criarLivro(token);
 
-        DiarioModel diarioModel = DiarioFactory.criarDiarioLido(livroId);
+        DiarioModel diarioModel = DiarioFactory.criarDiarioLido(livroCriado.livroId(), livroCriado.numeroDePaginas());
+
         Response responseDiario = DiarioClient.criarDiario(token, diarioModel);
         responseDiario
                 .then()
@@ -60,9 +62,9 @@ public class DiarioCriarTest extends BaseTest {
     public void deveRecusarTerminoLeituraAnteriorAoInicio() throws IOException {
         String token = UsuarioHelper.loginLeitor();
 
-        int livroId = criarLivroId(token);
+        LivroCriado livroCriado = criarLivro(token);
 
-        DiarioModel diarioModel = DiarioFactory.terminoLeituraAnteriorAoInicio(livroId);
+        DiarioModel diarioModel = DiarioFactory.terminoLeituraAnteriorAoInicio(livroCriado.livroId(), livroCriado.numeroDePaginas());
         Response responseDiario = DiarioClient.criarDiario(token, diarioModel);
         responseDiario
                 .then()
@@ -75,9 +77,9 @@ public class DiarioCriarTest extends BaseTest {
     public void deveRecusarInicioDaLeituraDataComFormatoInvalido() throws IOException {
         String token = UsuarioHelper.loginLeitor();
 
-        int livroId = criarLivroId(token);
+        LivroCriado livroCriado = criarLivro(token);
 
-        DiarioModel diarioModel = DiarioFactory.criarDiarioLido(livroId);
+        DiarioModel diarioModel = DiarioFactory.criarDiarioLido(livroCriado.livroId(), livroCriado.numeroDePaginas());
         diarioModel.setInicioDaLeitura(DataFakerUtils.dataFormatoInvalido());
         Response responseDiario = DiarioClient.criarDiario(token, diarioModel);
         responseDiario
@@ -91,9 +93,9 @@ public class DiarioCriarTest extends BaseTest {
     public void deveRecusarTerminoDaLeituraDataComFormatoInvalido() throws IOException {
         String token = UsuarioHelper.loginLeitor();
 
-        int livroId = criarLivroId(token);
+        LivroCriado livroCriado = criarLivro(token);
 
-        DiarioModel diarioModel = DiarioFactory.criarDiarioLido(livroId);
+        DiarioModel diarioModel = DiarioFactory.criarDiarioLido(livroCriado.livroId(), livroCriado.numeroDePaginas());
         diarioModel.setTerminoDaLeitura(DataFakerUtils.dataFormatoInvalido());
         Response responseDiario = DiarioClient.criarDiario(token, diarioModel);
         responseDiario
@@ -107,9 +109,9 @@ public class DiarioCriarTest extends BaseTest {
     public void inicioLeituraObrigatorio() throws IOException {
         String token = UsuarioHelper.loginLeitor();
 
-        int livroId = criarLivroId(token);
+        LivroCriado livroCriado = criarLivro(token);
 
-        DiarioModel diarioModel = DiarioFactory.criarDiarioLido(livroId);
+        DiarioModel diarioModel = DiarioFactory.criarDiarioLido(livroCriado.livroId(), livroCriado.numeroDePaginas());
         diarioModel.setInicioDaLeitura(null);
         Response responseDiario = DiarioClient.criarDiario(token, diarioModel);
         responseDiario
@@ -123,60 +125,48 @@ public class DiarioCriarTest extends BaseTest {
     public void paginasLidasValorNegativo() throws IOException {
         String token = UsuarioHelper.loginLeitor();
 
-        int livroId = criarLivroId(token);
+        LivroCriado livroCriado = criarLivro(token);
 
-        DiarioModel diarioModel = DiarioFactory.criarDiarioLido(livroId);
+        DiarioModel diarioModel = DiarioFactory.criarDiarioLido(livroCriado.livroId(), livroCriado.numeroDePaginas());
         diarioModel.setPaginasLidas(-1);
         Response responseDiario = DiarioClient.criarDiario(token, diarioModel);
         responseDiario
                 .then()
                 .log().body()
-                .statusCode(400);
+                .statusCode(400)
+                .body("paginasLidas", equalTo("O valor deve ser positivo ou zero"));
     }
 
     @Test
     public void paginasLidasValorNulo() throws IOException {
         String token = UsuarioHelper.loginLeitor();
 
-        int livroId = criarLivroId(token);
+        LivroCriado livroCriado = criarLivro(token);
 
-        DiarioModel diarioModel = DiarioFactory.criarDiarioLido(livroId);
+        DiarioModel diarioModel = DiarioFactory.criarDiarioLido(livroCriado.livroId(), livroCriado.numeroDePaginas());
         diarioModel.setPaginasLidas(null);
         Response responseDiario = DiarioClient.criarDiario(token, diarioModel);
         responseDiario
                 .then()
                 .log().body()
                 .statusCode(400)
-                .body(equalTo("{\"paginasLidas\":\"O número de páginas lidas é obrigatório.\"}"));
+                .body("paginasLidas", equalTo("O número de páginas lidas é obrigatório."));
     }
 
     @Test
     public void paginasLidasMaiorQueTotalDePaginas() throws IOException {
         String token = UsuarioHelper.loginLeitor();
 
-        LivroModel livro = LivroFactory.criarLivroIsbn13();
+        LivroCriado livroCriado = criarLivro(token);
 
-        Response responseLivro = LivroHelper.criarLivroCadastrar(token, livro);
-        responseLivro
-                .then()
-                .statusCode(201);
-
-        int livroId = responseLivro.jsonPath().getInt("id");
-
-        LeituraStatusModel leituraStatusModel = LeituraStatusFactory.criarLeituraLivroStatusQueroLer(livroId);
-        Response responseLeitura = LeituraClient.criarLeituraStatus(token, leituraStatusModel);
-        responseLeitura
-                .then()
-                .statusCode(201);
-
-        DiarioModel diarioModel = DiarioFactory.criarDiarioLido(livroId);
-        diarioModel.setPaginasLidas(livro.getNumeroDePaginas()+1);
+        DiarioModel diarioModel = DiarioFactory.criarDiarioLido(livroCriado.livroId(), livroCriado.numeroDePaginas());
+        diarioModel.setPaginasLidas(livroCriado.numeroDePaginas()+1);
         Response responseDiario = DiarioClient.criarDiario(token, diarioModel);
         responseDiario
                 .then()
                 .log().body()
                 .statusCode(409)
-                .body(equalTo("O número de páginas lidas não pode ser maior que o total de páginas do livro. Total: ("+livro.getNumeroDePaginas()+")"));
+                .body(equalTo("O número de páginas lidas não pode ser maior que o total de páginas do livro. Total: ("+livroCriado.numeroDePaginas()+")"));
     }
 
     @ParameterizedTest
@@ -188,9 +178,9 @@ public class DiarioCriarTest extends BaseTest {
     public void notaValorInvalido(double notas) throws IOException {
         String token = UsuarioHelper.loginLeitor();
 
-        int livroId = criarLivroId(token);
+        LivroCriado livroCriado = criarLivro(token);
 
-        DiarioModel diarioModel = DiarioFactory.criarDiarioLido(livroId);
+        DiarioModel diarioModel = DiarioFactory.criarDiarioLido(livroCriado.livroId(), livroCriado.numeroDePaginas());
         diarioModel.setNota(notas);
         Response responseDiario = DiarioClient.criarDiario(token, diarioModel);
         responseDiario
@@ -208,9 +198,9 @@ public class DiarioCriarTest extends BaseTest {
     public void notaValorDecimalInvalido(double notas) throws IOException {
         String token = UsuarioHelper.loginLeitor();
 
-        int livroId = criarLivroId(token);
+        LivroCriado livroCriado = criarLivro(token);
 
-        DiarioModel diarioModel = DiarioFactory.criarDiarioLido(livroId);
+        DiarioModel diarioModel = DiarioFactory.criarDiarioLido(livroCriado.livroId(), livroCriado.numeroDePaginas());
         diarioModel.setNota(notas);
         Response responseDiario = DiarioClient.criarDiario(token, diarioModel);
         responseDiario
@@ -224,9 +214,9 @@ public class DiarioCriarTest extends BaseTest {
     public void tituloDaResenhaNulo() throws IOException {
         String token = UsuarioHelper.loginLeitor();
 
-        int livroId = criarLivroId(token);
+        LivroCriado livroCriado = criarLivro(token);
 
-        DiarioModel diarioModel = DiarioFactory.criarDiarioLido(livroId);
+        DiarioModel diarioModel = DiarioFactory.criarDiarioLido(livroCriado.livroId(), livroCriado.numeroDePaginas());
         diarioModel.setTituloDaResenha(null);
         Response responseDiario = DiarioClient.criarDiario(token, diarioModel);
         responseDiario
@@ -239,9 +229,9 @@ public class DiarioCriarTest extends BaseTest {
     public void tituloDaResenhaMais250Caracteres() throws IOException {
         String token = UsuarioHelper.loginLeitor();
 
-        int livroId = criarLivroId(token);
+        LivroCriado livroCriado = criarLivro(token);
 
-        DiarioModel diarioModel = DiarioFactory.criarDiarioLido(livroId);
+        DiarioModel diarioModel = DiarioFactory.criarDiarioLido(livroCriado.livroId(), livroCriado.numeroDePaginas());
         diarioModel.setTituloDaResenha(DataFakerUtils.caracteresComQuantidade(251));
         Response responseDiario = DiarioClient.criarDiario(token, diarioModel);
         responseDiario
@@ -254,9 +244,9 @@ public class DiarioCriarTest extends BaseTest {
     public void resenhaNulo() throws IOException {
         String token = UsuarioHelper.loginLeitor();
 
-        int livroId = criarLivroId(token);
+        LivroCriado livroCriado = criarLivro(token);
 
-        DiarioModel diarioModel = DiarioFactory.criarDiarioLido(livroId);
+        DiarioModel diarioModel = DiarioFactory.criarDiarioLido(livroCriado.livroId(), livroCriado.numeroDePaginas());
         diarioModel.setResenha(null);
         Response responseDiario = DiarioClient.criarDiario(token, diarioModel);
         responseDiario
@@ -269,9 +259,9 @@ public class DiarioCriarTest extends BaseTest {
     public void resenhaMenos100Caracteres() throws IOException {
         String token = UsuarioHelper.loginLeitor();
 
-        int livroId = criarLivroId(token);
+        LivroCriado livroCriado = criarLivro(token);
 
-        DiarioModel diarioModel = DiarioFactory.criarDiarioLido(livroId);
+        DiarioModel diarioModel = DiarioFactory.criarDiarioLido(livroCriado.livroId(), livroCriado.numeroDePaginas());
         diarioModel.setResenha(DataFakerUtils.caracteresComQuantidade(50));
         Response responseDiario = DiarioClient.criarDiario(token, diarioModel);
         responseDiario
@@ -280,14 +270,12 @@ public class DiarioCriarTest extends BaseTest {
                 .statusCode(400);
     }
 
-    private int criarLivroId(String token) throws IOException {
-
-        LivroModel livro = LivroFactory.criarLivroIsbn13();
-        Response responseLivro = LivroHelper.criarLivroCadastrar(token, livro);
+    private LivroCriado criarLivro(String token) throws IOException {
+        LivroModel livroModel = LivroFactory.criarLivroIsbn13();
+        Response responseLivro = LivroHelper.criarLivroCadastrar(token, livroModel);
         responseLivro
                 .then()
                 .statusCode(201);
-
         int livroId = responseLivro.jsonPath().getInt("id");
 
         LeituraStatusModel leituraStatusModel = LeituraStatusFactory.criarLeituraLivroStatusQueroLer(livroId);
@@ -296,6 +284,7 @@ public class DiarioCriarTest extends BaseTest {
                 .then()
                 .statusCode(201);
 
-        return livroId;
+        return new LivroCriado(livroId, livroModel.getNumeroDePaginas());
     }
+
 }
