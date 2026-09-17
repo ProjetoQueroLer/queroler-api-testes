@@ -23,7 +23,7 @@ import java.io.IOException;
 import static org.hamcrest.Matchers.equalTo;
 
 @ExtendWith(Setup.class)
-public class LeituraCriarComentario extends BaseTest {
+public class LeituraCriarComentarioTest extends BaseTest {
 
     @Test
     public void criarComentarioDiarioDoLivroComSucesso() throws IOException {
