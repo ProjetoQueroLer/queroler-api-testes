@@ -50,11 +50,12 @@ public class DiarioClient {
                 .delete(EndPoints.DIARIO_ID);
     }
 
-    public static Response atualizarDiarioPorLivro(String token, int diarioId) {
+    public static Response atualizarDiarioPorLivro(String token, int diarioId, Object body) {
 
         return given(BaseTest.requestSpecification)
                 .cookie("jwt", token)
                 .contentType(ContentType.JSON)
+                .body(body)
                 .pathParam("id", diarioId)
                 .when()
                 .put(EndPoints.DIARIO_ID);
